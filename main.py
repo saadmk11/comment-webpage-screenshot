@@ -46,7 +46,7 @@ class WebsiteScreenshot:
         """Get headers for GitHub API request"""
         return {
             'Accept': 'application/vnd.github.v3+json',
-            'authorization': 'Bearer {token}'.format(token=self.token)
+            'authorization': f'Bearer {self.token}'
         }
 
     def _comment_screenshots(self, images):
@@ -56,21 +56,21 @@ class WebsiteScreenshot:
 
         for image in images:
             filename, url = image['filename'], image['url']
-            string_data += f'![{filename}]({url})\n'
-
-        print(string_data)
+            string_data += f'test'
 
         comment_url = (
             f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/'
             f'issues/{self.pull_request_number}/comments'
         )
+        print(f'{comment_url=}')
         data = {
             'body': string_data
         }
+        print(f'{data=}')
         response = requests.post(
             comment_url,
             headers=self._request_headers,
-            data=data
+            json=data
         )
         print(response.status_code)
         print(response.json())
