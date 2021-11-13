@@ -73,4 +73,5 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+RUN ["chmod", "+x", "/main.py"]
 ENTRYPOINT ["python", "/main.py"]
