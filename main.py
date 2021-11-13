@@ -56,7 +56,7 @@ class WebsiteScreenshot:
 
         for image in images:
             filename, url = image['filename'], image['url']
-            string_data += f'test'
+            string_data += f'![{filename}]({url})\n'
 
         comment_url = (
             f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/'
