@@ -26,7 +26,7 @@ class WebsiteScreenshot:
             data = json.load(json_file)
             number = data['number']
 
-        return number
+        return int(number)
 
     @staticmethod
     def _take_screenshot(filename, url_or_file_path):
@@ -65,10 +65,7 @@ class WebsiteScreenshot:
             f'issues/{self.pull_request_number}/comments'
         )
         data = {
-            'body': string_data,
-            'owner': owner,
-            'repo': repo,
-            'issue_number': self.pull_request_number,
+            'body': string_data
         }
         response = requests.post(
             comment_url,
@@ -77,6 +74,7 @@ class WebsiteScreenshot:
         )
         print(response.status_code)
         print(response.json())
+        print(response.status_code != 201)
 
         if response.status_code != 201:
             # API should return 201, otherwise show error message
@@ -85,6 +83,7 @@ class WebsiteScreenshot:
                 f'GitHub API returned error response for '
                 f'{self.repository}, status code: {response.status_code}'
             )
+            print('message: ', msg)
 
             print_message(msg, message_type='error')
 
