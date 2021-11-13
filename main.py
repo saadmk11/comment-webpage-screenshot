@@ -58,6 +58,8 @@ class WebsiteScreenshot:
             filename, url = image['filename'], image['url']
             string_data += f'![{filename}]({url})\n'
 
+        print(string_data)
+
         comment_url = (
             f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/'
             f'issues/{self.pull_request_number}/comments'
@@ -109,6 +111,7 @@ class WebsiteScreenshot:
                         'url': image_url
                     }
                 )
+        print(f'{images=}')
         if images:
             print_message('Comment Website Screen Capture', message_type='group')
             self._comment_screenshots(images)
