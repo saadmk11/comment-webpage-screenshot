@@ -1,5 +1,14 @@
 FROM nikolaik/python-nodejs:python3.8-nodejs16
 
+LABEL "com.github.actions.name"="Website Screen Capture"
+LABEL "com.github.actions.description"="Capture Website Screenshots and Comment on Pull Request."
+LABEL "com.github.actions.icon"="image"
+LABEL "com.github.actions.color"="blue"
+
+LABEL "repository"="https://github.com/saadmk11/website-screen-capture"
+LABEL "homepage"="https://github.com/saadmk11/website-screen-capture"
+LABEL "maintainer"="saadmk11"
+
 WORKDIR /app
 
 RUN apt-get update \
@@ -63,3 +72,5 @@ COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY . .
+
+ENTRYPOINT ["python", "main.py"]

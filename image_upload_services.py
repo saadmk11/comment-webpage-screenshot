@@ -15,3 +15,7 @@ class ImgurClient:
         )
         print(response.status_code)
         print(response.json())
+        data = response.json()
+
+        if response.status_code == 200 and data['success']:
+            return data['data']['link']
