@@ -73,6 +73,8 @@ class WebsiteScreenshot:
             headers=self._request_headers,
             data=data
         )
+        print(response.status_code)
+        print(response.json())
 
         if response.status_code != 201:
             # API should return 201, otherwise show error message
@@ -107,7 +109,10 @@ class WebsiteScreenshot:
                         'url': image_url
                     }
                 )
-        self._comment_screenshots(images)
+        if images:
+            print_message('Comment Website Screen Capture', message_type='group')
+            self._comment_screenshots(images)
+            print_message('', message_type='endgroup')
 
 
 def print_message(message, message_type=None):
