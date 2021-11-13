@@ -10,7 +10,6 @@ LABEL "homepage"="https://github.com/saadmk11/website-screen-capture"
 LABEL "maintainer"="saadmk11"
 
 WORKDIR /app
-ENV PYTHONPATH /app
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -72,6 +71,7 @@ COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY main.py /main.py
+COPY image_upload_services.py /image_upload_services.py
 
 CMD ["python", "/main.py"]
