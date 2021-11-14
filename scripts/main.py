@@ -17,7 +17,7 @@ class WebsiteScreenshot:
     def __init__(self, token, repository, upload_to, event_path):
         self.token = token
         self.repository = repository
-        self.upload_to = upload_to
+        self.upload_to = upload_to.lower()
         self.pull_request_number = self._get_pull_request_number(event_path)
 
     @staticmethod
@@ -27,6 +27,7 @@ class WebsiteScreenshot:
             # This is just a webhook payload available to the Action
             data = json.load(json_file)
             number = data['number']
+            print(data)
 
         return int(number)
 
@@ -50,6 +51,30 @@ class WebsiteScreenshot:
             'Accept': 'application/vnd.github.v3+json',
             'authorization': f'Bearer {self.token}'
         }
+
+    def _get_pull_request_changed_files(self):
+        """Gets changed files from the pull request"""
+        owner, repo = self.repository.split('/')
+        pull_request_url = (
+            f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/pulls/'
+            f'{self.pull_request_number}/files'
+        )
+        response = requests.get(
+            pull_request_url,
+            headers=self._request_headers
+        )
+        if response.status_code != 200:
+            # API should return 200, otherwise show error message
+            msg = (
+                f'Error while trying to get pull request data. '
+                f'GitHub API returned error response for '
+                f'{self.repository}, status code: {response.status_code}'
+            )
+            print_message(msg, message_type='error')
+            return []
+
+        # Get changed files
+        return [file['filename'] for file in response.json()]
 
     def _comment_screenshots(self, images):
         """Comments Screenshots to the pull request"""
@@ -85,8 +110,6 @@ class WebsiteScreenshot:
                 f'GitHub API returned error response for '
                 f'{self.repository}, status code: {response.status_code}'
             )
-            print('message: ', msg)
-
             print_message(msg, message_type='error')
 
     def _get_image_upload_service(self):
@@ -99,6 +122,8 @@ class WebsiteScreenshot:
         image_upload_service = self._get_image_upload_service()
         urls = ['https://www.google.com', 'https://www.linkedin.com']
         images = []
+        changed_files = self._get_pull_request_changed_files()
+        print(f'{changed_files=}')
 
         for url in urls:
             filename = f'{url}.png'
