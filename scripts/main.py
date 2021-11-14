@@ -156,7 +156,7 @@ class WebsiteScreenshot:
                         'url': image_url
                     }
                 )
-
+        print(f'{images=}')
         if images:
             print_message('Comment Website Screen Capture', message_type='group')
             self._comment_screenshots(images)
