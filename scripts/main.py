@@ -73,8 +73,8 @@ class WebsiteScreenshot:
                 os.makedirs(directory)
 
             screenshot_capture_command.append(f"--output={directory}/{filename}")
-        print(subprocess.run(['pwd']))
-        print(subprocess.run(['ls']))
+        subprocess.run(['pwd'])
+        subprocess.run(['ls'])
         try:
             output = subprocess.check_output(screenshot_capture_command, stderr=subprocess.STDOUT)
             print(output)
@@ -162,7 +162,7 @@ class WebsiteScreenshot:
             to_capture_list += changed_files
 
         for url in to_capture_list:
-            filename = f'{url}.png'
+            filename = f'{url}.png'.replace('/', '-')
             image_data = self._capture_screenshot(filename, url)
             image_upload_service.add(filename, image_data)
 
