@@ -31,7 +31,7 @@ class WebsiteScreenshot:
         return int(number)
 
     @staticmethod
-    def _take_screenshot(filename, url_or_file_path):
+    def _capture_screenshot(filename, url_or_file_path):
         """Takes a screenshot of websites"""
         launch_options = {"args": ["--no-sandbox"]}
         screenshot_capture_command = [
@@ -54,11 +54,11 @@ class WebsiteScreenshot:
     def _comment_screenshots(self, images):
         """Comments Screenshots to the pull request"""
         owner, repo = self.repository.split('/')
-        string_data = 'Here are the Screenshots after the Latest Changes\n'
+        string_data = '#### Here are the Screenshots after the Latest Changes\n\n'
 
         for image in images:
             filename, url = image['filename'], image['url']
-            string_data += f'{filename}\n![{filename}]({url})\n'
+            string_data += f'**{filename}**\n![{filename}]({url})\n'
 
         comment_url = (
             f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/'
@@ -102,7 +102,7 @@ class WebsiteScreenshot:
 
         for url in urls:
             filename = f'{url}.png'
-            image_data = self._take_screenshot(filename, url)
+            image_data = self._capture_screenshot(filename, url)
             image_url = image_upload_service.upload(filename, image_data)
 
             if image_url:
