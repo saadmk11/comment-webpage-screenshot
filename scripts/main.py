@@ -7,18 +7,36 @@ from functools import cached_property
 import requests
 
 import image_upload_services
-from helpers import print_message
+from helpers import print_message, convert_string_to_list
 
 
 class WebsiteScreenshot:
 
     GITHUB_API_URL = 'https://api.github.com'
 
-    def __init__(self, token, repository, upload_to, event_path):
+    def __init__(
+        self,
+        token,
+        repository,
+        upload_to,
+        event_path,
+        capture_changed_html_files,
+        capture_html_file_paths=None,
+        capture_urls=None
+    ):
         self.token = token
         self.repository = repository
+        self.capture_changed_html_files = capture_changed_html_files
         self.upload_to = upload_to.lower()
         self.pull_request_number = self._get_pull_request_number(event_path)
+        self.capture_html_file_paths = (
+            convert_string_to_list(capture_html_file_paths)
+            if capture_html_file_paths else []
+        )
+        self.capture_urls = (
+            convert_string_to_list(capture_urls)
+            if capture_urls else []
+        )
 
     @staticmethod
     def _get_pull_request_number(event_path):
@@ -73,7 +91,11 @@ class WebsiteScreenshot:
             return []
 
         # Get changed files
-        return [file['filename'] for file in response.json()]
+        return [
+            file['filename']
+            for file in response.json()
+            if file['filename'].endswith('.html')
+        ]
 
     def _comment_screenshots(self, images):
         """Comments Screenshots to the pull request"""
@@ -115,15 +137,14 @@ class WebsiteScreenshot:
 
     def run(self):
         image_upload_service = self._get_image_upload_service()
-        urls = ['https://www.google.com', 'https://www.linkedin.com']
+        to_capture_list = self.capture_urls + self.capture_html_file_paths
         images = []
-        changed_files = self._get_pull_request_changed_files()
-        print(f'{changed_files=}')
-        for file in changed_files:
-            with open(file, 'r') as f:
-                print(f.read())
 
-        for url in urls:
+        if self.capture_changed_html_files:
+            changed_files = self._get_pull_request_changed_files()
+            to_capture_list += changed_files
+
+        for url in to_capture_list:
             filename = f'{url}.png'
             image_data = self._capture_screenshot(filename, url)
             image_url = image_upload_service.upload(filename, image_data)
@@ -151,6 +172,9 @@ if __name__ == '__main__':
 
     # User inputs from workflow
     upload_to = os.environ['INPUT_UPLOAD_TO']
+    capture_changed_html_files = os.environ['INPUT_CAPTURE_CHANGED_HTML_FILES']
+    capture_html_file_paths = os.environ['INPUT_CAPTURE_HTML_FILE_PATHS']
+    capture_urls = os.environ['INPUT_CAPTURE_URLS']
 
     # Token provided by the workflow run.
     token = os.environ.get('GITHUB_TOKEN') or os.environ.get('INPUT_GITHUB_TOKEN')
@@ -170,7 +194,10 @@ if __name__ == '__main__':
         token,
         repository,
         upload_to,
-        event_path
+        event_path,
+        capture_changed_html_files,
+        capture_html_file_paths=capture_html_file_paths,
+        capture_urls=capture_urls
     )
     # Run Website Screen Capture
     capture.run()
