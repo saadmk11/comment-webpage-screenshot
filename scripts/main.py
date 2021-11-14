@@ -68,13 +68,13 @@ class WebsiteScreenshot:
         ]
 
         if self.upload_to == 'github_branch':
-            directory = '/website-screenshots'
-            if not os.path.exists(directory):
-                os.makedirs(directory)
+            directory = 'website-screenshots'
+            os.makedirs(directory, exist_ok=True)
 
             screenshot_capture_command.append(f"--output={directory}/{filename}")
         subprocess.run(['pwd'])
         subprocess.run(['ls'])
+        print(os.path.dirname(os.path.abspath(__file__)))
         try:
             output = subprocess.check_output(screenshot_capture_command, stderr=subprocess.STDOUT)
             print(output)
