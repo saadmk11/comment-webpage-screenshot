@@ -1,6 +1,6 @@
 import requests
 
-from scripts.helpers import print_message
+from helpers import print_message
 
 
 class ImgurClient:
