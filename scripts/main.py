@@ -27,9 +27,8 @@ class WebsiteScreenshot:
             # This is just a webhook payload available to the Action
             data = json.load(json_file)
             number = data['number']
-            print(data)
 
-        return int(number)
+        return number
 
     @staticmethod
     def _capture_screenshot(filename, url_or_file_path):
@@ -89,19 +88,15 @@ class WebsiteScreenshot:
             f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/'
             f'issues/{self.pull_request_number}/comments'
         )
-        print(f'{comment_url=}')
         data = {
             'body': string_data
         }
-        print(f'{data=}')
+
         response = requests.post(
             comment_url,
             headers=self._request_headers,
             json=data
         )
-        print(response.status_code)
-        print(response.json())
-        print(response.status_code != 201)
 
         if response.status_code != 201:
             # API should return 201, otherwise show error message
@@ -124,6 +119,9 @@ class WebsiteScreenshot:
         images = []
         changed_files = self._get_pull_request_changed_files()
         print(f'{changed_files=}')
+        for file in changed_files:
+            with open(file, 'r') as f:
+                print(f.read())
 
         for url in urls:
             filename = f'{url}.png'
@@ -137,7 +135,7 @@ class WebsiteScreenshot:
                         'url': image_url
                     }
                 )
-        print(f'{images=}')
+
         if images:
             print_message('Comment Website Screen Capture', message_type='group')
             self._comment_screenshots(images)
