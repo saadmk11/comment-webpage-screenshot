@@ -76,4 +76,4 @@ COPY scripts scripts
 #COPY scripts/image_upload_services.py /image_upload_services.py
 #COPY scripts/helpers.py /helpers.py
 
-CMD ["python", "./scripts/main.py"]
+CMD ["ls -a"]
