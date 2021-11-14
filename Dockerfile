@@ -75,5 +75,5 @@ COPY /scripts/* scripts/
 #COPY scripts/main.py /main.py
 #COPY scripts/image_upload_services.py /image_upload_services.py
 #COPY scripts/helpers.py /helpers.py
-
+RUN ls
 CMD ["python", "./scripts/main.py"]
