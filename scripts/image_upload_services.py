@@ -5,7 +5,7 @@ import requests
 from helpers import print_message
 
 
-class ImageUploadService:
+class ImageUploadServiceBase:
 
     def __init__(self, repository, pull_request_number):
         self.files_to_upload = []
@@ -21,7 +21,7 @@ class ImageUploadService:
         return NotImplemented
 
 
-class ImgurImageUploadService(ImageUploadService):
+class ImgurImageUploadService(ImageUploadServiceBase):
 
     def upload_single_image(self, name, image_data):
         response = requests.post(
@@ -62,7 +62,7 @@ class ImgurImageUploadService(ImageUploadService):
         return image_urls
 
 
-class GitHubBranchImageUploadService(ImageUploadService):
+class GitHubBranchImageUploadService(ImageUploadServiceBase):
 
     def _create_new_branch(self):
         """Create and push a new branch with the changes"""
