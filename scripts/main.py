@@ -70,19 +70,9 @@ class WebsiteScreenshot:
         if self.upload_to == 'github_branch':
             directory = 'website-screenshots'
             os.makedirs(directory, exist_ok=True)
-
             screenshot_capture_command.append(f"--output={directory}/{filename}")
-        subprocess.run(['pwd'])
-        subprocess.run(['ls'])
-        print(os.path.dirname(os.path.abspath(__file__)))
-        try:
-            output = subprocess.check_output(screenshot_capture_command, stderr=subprocess.STDOUT)
-            print(output)
-            return output
-        except subprocess.CalledProcessError as e:
-            print(e)
-            print(e.returncode)
-            print(e.output)
+
+        return subprocess.check_output(screenshot_capture_command)
 
     def _get_pull_request_changed_files(self):
         """Gets changed files from the pull request"""
@@ -105,7 +95,7 @@ class WebsiteScreenshot:
             print_message(msg, message_type='error')
             return []
 
-        # Get changed files
+        # Return changed/added html files
         return [
             file['filename']
             for file in response.json()
@@ -125,14 +115,13 @@ class WebsiteScreenshot:
             f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/'
             f'issues/{self.pull_request_number}/comments'
         )
-        data = {
-            'body': string_data
-        }
 
         response = requests.post(
             comment_url,
             headers=self._request_headers,
-            json=data
+            json={
+                'body': string_data
+            }
         )
 
         if response.status_code != 201:
@@ -147,23 +136,26 @@ class WebsiteScreenshot:
     def _get_image_upload_service(self):
         """Get image upload service"""
         if self.upload_to == 'imgur':
-            return image_upload_services.ImgurClient
+            return image_upload_services.ImageUploadService
         elif self.upload_to == 'github_branch':
-            return image_upload_services.GitHubBranch
+            return image_upload_services.GitHubBranchImageUploadService
         else:
             return NotImplemented
 
     def run(self):
-        image_upload_service = self._get_image_upload_service()(self.repository, self.pull_request_number)
+        image_upload_service = self._get_image_upload_service()(
+            self.repository,
+            self.pull_request_number
+        )
         to_capture_list = self.capture_urls + self.capture_html_file_paths
 
         if self.capture_changed_html_files:
             changed_files = self._get_pull_request_changed_files()
             to_capture_list += changed_files
 
-        for url in to_capture_list:
-            filename = f'{url}.png'.replace('/', '-').replace(' ', '')
-            image_data = self._capture_screenshot(filename, url)
+        for item in to_capture_list:
+            filename = f'{item}.png'.replace('/', '-').replace(' ', '')
+            image_data = self._capture_screenshot(filename, item)
             image_upload_service.add(filename, image_data)
 
         uploaded_images = image_upload_service.upload()
@@ -188,7 +180,10 @@ if __name__ == '__main__':
     capture_urls = os.environ['INPUT_CAPTURE_URLS']
 
     # Token provided by the workflow run.
-    token = os.environ.get('GITHUB_TOKEN') or os.environ.get('INPUT_GITHUB_TOKEN')
+    token = (
+        os.environ.get('GITHUB_TOKEN') or
+        os.environ.get('INPUT_GITHUB_TOKEN')
+    )
 
     if event_name != 'pull_request':
         print_message(

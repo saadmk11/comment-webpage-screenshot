@@ -5,7 +5,7 @@ import requests
 from helpers import print_message
 
 
-class Uploader:
+class ImageUploadService:
 
     def __init__(self, repository, pull_request_number):
         self.files_to_upload = []
@@ -21,12 +21,11 @@ class Uploader:
         return NotImplemented
 
 
-class ImgurClient(Uploader):
-    IMAGE_UPLOAD_URL = 'https://api.imgur.com/3/upload'
+class ImgurImageUploadService(ImageUploadService):
 
     def upload_single_image(self, name, image_data):
         response = requests.post(
-            self.IMAGE_UPLOAD_URL,
+            'https://api.imgur.com/3/upload',
             files={
                 "image": image_data,
             },
@@ -62,7 +61,8 @@ class ImgurClient(Uploader):
                 )
         return image_urls
 
-class GitHubBranch(Uploader):
+
+class GitHubBranchImageUploadService(ImageUploadService):
 
     def _create_new_branch(self):
         """Create and push a new branch with the changes"""
@@ -82,7 +82,6 @@ class GitHubBranch(Uploader):
         remote_branches = subprocess.check_output(
             ['git', 'branch', '-r'],
         )
-        print(remote_branches)
 
         if new_branch in str(remote_branches):
             subprocess.run(
@@ -98,7 +97,9 @@ class GitHubBranch(Uploader):
             [
                 'git', 'commit',
                 f'--author={git_commit_author}',
-                '-m', f'[website-screenshots-action] Added Screenshots'
+                '-m',
+                '[website-screenshots-action] '
+                f'Added Screenshots for PR #{self.pull_request_number}'
             ]
         )
         subprocess.run(
@@ -127,4 +128,3 @@ class GitHubBranch(Uploader):
                 }
             )
         return image_urls
-# capture-website --launch-options '{"args": ["--no-sandbox"]}' --full-page https://www.google.com --output=/website-screenshots/https://www.google.com.png

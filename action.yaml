@@ -10,7 +10,7 @@ inputs:
   upload_to:
     description: 'Service to use for uploading the screenshots. (Options: github_branch, s3, imgur)'
     required: false
-    default: 'imgur'
+    default: 'github_branch'
 
   capture_changed_html_files:
     description: 'Take Screenshot of Changed/Added HTML Files. (Options: yes, no)'
