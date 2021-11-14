@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from functools import cached_property
 
 import requests
@@ -154,7 +155,10 @@ class WebsiteScreenshot:
             to_capture_list += changed_files
 
         for item in to_capture_list:
-            filename = f'{item}.png'.replace('/', '-').replace(' ', '')
+            filename = (
+                f'pr-{self.pull_request_number}-{item}-{int(time.time())}.png'
+            ).replace('/', '-').replace(' ', '')
+            print(filename)
             image_data = self._capture_screenshot(filename, item)
             image_upload_service.add(filename, image_data)
 

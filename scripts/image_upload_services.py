@@ -84,10 +84,12 @@ class GitHubBranchImageUploadService(ImageUploadService):
         )
 
         if new_branch in str(remote_branches):
+            print('Branch already exists...')
             subprocess.run(
                 ['git', 'checkout', new_branch]
             )
         else:
+            print('Branch Does not exist...')
             subprocess.run(
                 ['git', 'checkout', '-b', new_branch]
             )
