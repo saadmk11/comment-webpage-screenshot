@@ -73,6 +73,8 @@ class WebsiteScreenshot:
                 os.makedirs(directory)
 
             screenshot_capture_command.append(f"--output={directory}/{filename}")
+        print(subprocess.run(['pwd']))
+        print(subprocess.run(['ls']))
         try:
             output = subprocess.check_output(screenshot_capture_command, stderr=subprocess.STDOUT)
             print(output)
