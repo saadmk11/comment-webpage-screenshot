@@ -107,7 +107,10 @@ class GitHubBranch(Uploader):
         return new_branch
 
     def _get_github_image_url(self, filename, new_branch):
-        return f'https://raw.githubusercontent.com/{self.repository}/{new_branch}/{filename}'
+        return (
+            f'https://raw.githubusercontent.com/{self.repository}/'
+            f'{new_branch}/website-screenshots/{filename}'
+        )
 
     def upload(self):
         new_branch = self._create_new_branch()

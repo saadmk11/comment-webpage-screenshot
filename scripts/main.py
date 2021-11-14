@@ -162,7 +162,7 @@ class WebsiteScreenshot:
             to_capture_list += changed_files
 
         for url in to_capture_list:
-            filename = f'{url}.png'.replace('/', '-')
+            filename = f'{url}.png'.replace('/', '-').replace(' ', '')
             image_data = self._capture_screenshot(filename, url)
             image_upload_service.add(filename, image_data)
 
