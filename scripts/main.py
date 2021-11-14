@@ -54,11 +54,11 @@ class WebsiteScreenshot:
     def _comment_screenshots(self, images):
         """Comments Screenshots to the pull request"""
         owner, repo = self.repository.split('/')
-        string_data = '#### Here are the Screenshots after the Latest Changes\n\n'
+        string_data = '## Here are the Screenshots after the Latest Changes\n\n'
 
         for image in images:
             filename, url = image['filename'], image['url']
-            string_data += f'**{filename}**\n![{filename}]({url})\n'
+            string_data += f'### {filename}\n![{filename}]({url})\n'
 
         comment_url = (
             f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/'

@@ -22,7 +22,7 @@ class ImgurClient:
 
         if response.status_code == 200 and data['success']:
             link = data['data']['link']
-            print_message(f'Image "{name}" Uploaded to {link}')
+            print_message(f'Image "{name}" Uploaded to "{link}"')
             return link
         else:
             print_message(
