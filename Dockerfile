@@ -9,8 +9,6 @@ LABEL "repository"="https://github.com/saadmk11/website-screen-capture"
 LABEL "homepage"="https://github.com/saadmk11/website-screen-capture"
 LABEL "maintainer"="saadmk11"
 
-WORKDIR /app
-
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        wget \
