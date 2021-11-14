@@ -73,10 +73,14 @@ class WebsiteScreenshot:
                 os.makedirs(directory)
 
             screenshot_capture_command.append(f"--output={directory}/{filename}")
-
-        output = subprocess.check_output(screenshot_capture_command, stderr=subprocess.STDOUT)
-        print(output)
-        return output
+        try:
+            output = subprocess.check_output(screenshot_capture_command, stderr=subprocess.STDOUT)
+            print(output)
+            return output
+        except subprocess.CalledProcessError as e:
+            print(e)
+            print(e.returncode)
+            print(e.output)
 
     def _get_pull_request_changed_files(self):
         """Gets changed files from the pull request"""
