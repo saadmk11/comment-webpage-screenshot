@@ -1,11 +1,13 @@
 import json
 import os
 import subprocess
+import sys
 from functools import cached_property
 
 import requests
 
 import image_upload_services
+from helpers import print_message
 
 
 class WebsiteScreenshot:
@@ -117,18 +119,6 @@ class WebsiteScreenshot:
             print_message('', message_type='endgroup')
 
 
-def print_message(message, message_type=None):
-    """Helper function to print colorful outputs in GitHub Actions shell"""
-    # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions
-    if not message_type:
-        return subprocess.run(['echo', f'{message}'])
-
-    if message_type == 'endgroup':
-        return subprocess.run(['echo', '::endgroup::'])
-
-    return subprocess.run(['echo', f'::{message_type}::{message}'])
-
-
 if __name__ == '__main__':
     # Default environment variable from GitHub
     # https://docs.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables
@@ -141,6 +131,13 @@ if __name__ == '__main__':
 
     # Token provided by the workflow run.
     token = os.environ.get('GITHUB_TOKEN') or os.environ.get('INPUT_GITHUB_TOKEN')
+
+    if event_name != 'pull_request':
+        print_message(
+            'This action only works for pull request event',
+            message_type='error'
+        )
+        sys.exit(1)
 
     # Group: Website Screen Capture
     print_message('Website Screen Capture', message_type='group')
