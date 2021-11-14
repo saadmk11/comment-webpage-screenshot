@@ -48,8 +48,15 @@ class WebsiteScreenshot:
 
         return number
 
-    @staticmethod
-    def _capture_screenshot(filename, url_or_file_path):
+    @cached_property
+    def _request_headers(self):
+        """Get headers for GitHub API request"""
+        return {
+            'Accept': 'application/vnd.github.v3+json',
+            'authorization': f'Bearer {self.token}'
+        }
+
+    def _capture_screenshot(self, filename, url_or_file_path):
         """Takes a screenshot of websites"""
         launch_options = {"args": ["--no-sandbox"]}
         screenshot_capture_command = [
@@ -59,15 +66,15 @@ class WebsiteScreenshot:
             "--full-page",
             url_or_file_path
         ]
-        return subprocess.check_output(screenshot_capture_command)
 
-    @cached_property
-    def _request_headers(self):
-        """Get headers for GitHub API request"""
-        return {
-            'Accept': 'application/vnd.github.v3+json',
-            'authorization': f'Bearer {self.token}'
-        }
+        if self.upload_to == 'github_branch':
+            directory = '/website-screenshots'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+            screenshot_capture_command.append(f"--output={directory}/{filename}")
+
+        return subprocess.check_output(screenshot_capture_command)
 
     def _get_pull_request_changed_files(self):
         """Gets changed files from the pull request"""
@@ -132,13 +139,12 @@ class WebsiteScreenshot:
     def _get_image_upload_service(self):
         """Get image upload service"""
         if self.upload_to == 'imgur':
-            return image_upload_services.ImgurClient()
+            return image_upload_services.ImgurClient
         return NotImplemented
 
     def run(self):
-        image_upload_service = self._get_image_upload_service()
+        image_upload_service = self._get_image_upload_service()(self.repository, self.pull_request_number)
         to_capture_list = self.capture_urls + self.capture_html_file_paths
-        images = []
 
         if self.capture_changed_html_files:
             changed_files = self._get_pull_request_changed_files()
@@ -147,19 +153,13 @@ class WebsiteScreenshot:
         for url in to_capture_list:
             filename = f'{url}.png'
             image_data = self._capture_screenshot(filename, url)
-            image_url = image_upload_service.upload(filename, image_data)
+            image_upload_service.add(filename, image_data)
 
-            if image_url:
-                images.append(
-                    {
-                        'filename': filename,
-                        'url': image_url
-                    }
-                )
-        print(f'{images=}')
-        if images:
+        uploaded_images = image_upload_service.upload()
+
+        if uploaded_images:
             print_message('Comment Website Screen Capture', message_type='group')
-            self._comment_screenshots(images)
+            self._comment_screenshots(uploaded_images)
             print_message('', message_type='endgroup')
 
 
