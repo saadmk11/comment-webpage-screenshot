@@ -124,3 +124,4 @@ class GitHubBranch(Uploader):
                 }
             )
         return image_urls
+# capture-website --launch-options '{"args": ["--no-sandbox"]}' --full-page https://www.google.com --output=/website-screenshots/https://www.google.com.png
