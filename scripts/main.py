@@ -140,7 +140,10 @@ class WebsiteScreenshot:
         """Get image upload service"""
         if self.upload_to == 'imgur':
             return image_upload_services.ImgurClient
-        return NotImplemented
+        elif self.upload_to == 'github_branch':
+            return image_upload_services.GitHubBranch
+        else:
+            return NotImplemented
 
     def run(self):
         image_upload_service = self._get_image_upload_service()(self.repository, self.pull_request_number)
