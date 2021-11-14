@@ -69,10 +69,10 @@ COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY scripts/main.py /main.py
-COPY scripts/image_upload_services.py /image_upload_services.py
-COPY scripts/helpers.py /helpers.py
-
+COPY . .
+#COPY scripts/main.py /main.py
+#COPY scripts/image_upload_services.py /image_upload_services.py
+#COPY scripts/helpers.py /helpers.py
 RUN ls
-CMD ["python", "./scripts/main.py"]
+CMD ["python", "/scripts/main.py"]
 RUN ls
