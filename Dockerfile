@@ -71,7 +71,7 @@ COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY /scripts scripts/
+COPY /scripts/* .
 #COPY scripts/main.py /main.py
 #COPY scripts/image_upload_services.py /image_upload_services.py
 #COPY scripts/helpers.py /helpers.py
