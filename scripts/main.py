@@ -97,11 +97,11 @@ class WebsiteScreenshot:
 
     def run(self):
         image_upload_service = self._get_image_upload_service()
-        urls = ['https://www.google.com', 'https://www.facebook.com']
+        urls = ['https://www.google.com', 'https://www.linkedin.com']
         images = []
 
         for url in urls:
-            filename = f'PR #{self.pull_request_number}--{url}.png'
+            filename = f'{url}.png'
             image_data = self._take_screenshot(filename, url)
             image_url = image_upload_service.upload(filename, image_data)
 

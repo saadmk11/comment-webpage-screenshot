@@ -1,5 +1,8 @@
 import requests
 
+from scripts.helpers import print_message
+
+
 class ImgurClient:
     IMAGE_UPLOAD_URL = 'https://api.imgur.com/3/upload'
 
@@ -18,4 +21,11 @@ class ImgurClient:
         data = response.json()
 
         if response.status_code == 200 and data['success']:
-            return data['data']['link']
+            link = data['data']['link']
+            print_message(f'Image "{name}" Uploaded to {link}')
+            return link
+        else:
+            print_message(
+                f'Image "{name}" Upload Failed. '
+                f'Status Code: {response.status_code}'
+            )
