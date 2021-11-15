@@ -174,7 +174,6 @@ class WebsiteScreenshot:
             display_name = item
             # Generate Image Filename
             filename = self._get_image_filename(display_name)
-            print(filename)
             # Capture Screenshot
             image_data = self._capture_screenshot(filename, item)
             # Add Image to Uploader Service

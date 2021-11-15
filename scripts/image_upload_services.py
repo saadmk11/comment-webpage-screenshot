@@ -54,6 +54,8 @@ class ImgurImageUploadService(ImageUploadServiceBase):
             }
         )
         data = response.json()
+        print(data)
+        print(response.status_code)
 
         if response.status_code == 200 and data['success']:
             link = data['data']['link']
@@ -81,7 +83,7 @@ class ImgurImageUploadService(ImageUploadServiceBase):
                     }
                 )
                 # Sleep for 2 seconds after each successful image upload
-                time.sleep(2)
+                time.sleep(10)
         return image_urls
 
 
@@ -108,12 +110,10 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
         )
 
         if new_branch in str(remote_branches):
-            print('Branch already exists...')
             subprocess.run(
                 ['git', 'checkout', new_branch]
             )
         else:
-            print('Branch Does not exist...')
             subprocess.run(
                 ['git', 'checkout', '-b', new_branch]
             )
