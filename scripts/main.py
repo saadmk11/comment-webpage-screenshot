@@ -80,6 +80,8 @@ class WebsiteScreenshot:
             return subprocess.check_output(screenshot_capture_command)
         except subprocess.CalledProcessError as e:
             print(e.output)
+            print(e.stderr)
+            raise e
 
     def _get_pull_request_changed_files(self):
         """Gets changed files from the pull request"""
