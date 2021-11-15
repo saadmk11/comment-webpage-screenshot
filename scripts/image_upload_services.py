@@ -1,4 +1,5 @@
 import subprocess
+import time
 
 import requests
 
@@ -79,6 +80,8 @@ class ImgurImageUploadService(ImageUploadServiceBase):
                         'url': image_url
                     }
                 )
+                # Sleep for 2 seconds after each successful image upload
+                time.sleep(2)
         return image_urls
 
 
