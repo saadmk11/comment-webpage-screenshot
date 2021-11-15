@@ -81,7 +81,6 @@ class WebsiteScreenshot:
         except subprocess.CalledProcessError as e:
             print(e.output)
             print(e.stderr)
-            raise e
 
     def _get_pull_request_changed_files(self):
         """Gets changed files from the pull request"""
