@@ -56,6 +56,7 @@ class ImgurImageUploadService(ImageUploadServiceBase):
         data = response.json()
         print(data)
         print(response.status_code)
+        print(response.headers)
 
         if response.status_code == 200 and data['success']:
             link = data['data']['link']
