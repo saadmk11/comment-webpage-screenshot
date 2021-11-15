@@ -8,7 +8,7 @@ branding:
 
 inputs:
   upload_to:
-    description: 'Service to use for uploading the screenshots. (Options: github_branch, s3, imgur)'
+    description: 'Service to use for uploading the screenshots. (Options: github_branch, imgur)'
     required: false
     default: 'github_branch'
 

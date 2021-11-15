@@ -12,6 +12,10 @@ from helpers import print_message, convert_string_to_list
 
 
 class WebsiteScreenshot:
+    """
+    Capture Screenshots from Website URL/HTML File Path
+    and Comment it on Pull Request.
+    """
 
     GITHUB_API_URL = 'https://api.github.com'
 
@@ -58,7 +62,7 @@ class WebsiteScreenshot:
         }
 
     def _capture_screenshot(self, filename, url_or_file_path):
-        """Takes a screenshot of websites"""
+        """Capture a screenshot from url or file path"""
         launch_options = {"args": ["--no-sandbox"]}
         screenshot_capture_command = [
             "capture-website",
@@ -77,9 +81,8 @@ class WebsiteScreenshot:
 
     def _get_pull_request_changed_files(self):
         """Gets changed files from the pull request"""
-        owner, repo = self.repository.split('/')
         pull_request_url = (
-            f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/pulls/'
+            f'{self.GITHUB_API_URL}/repos/{self.repository}/pulls/'
             f'{self.pull_request_number}/files'
         )
         response = requests.get(
@@ -101,19 +104,21 @@ class WebsiteScreenshot:
             file['filename']
             for file in response.json()
             if file['filename'].endswith('.html')
+            and file['status'] != 'removed'
         ]
 
     def _comment_screenshots(self, images):
         """Comments Screenshots to the pull request"""
-        owner, repo = self.repository.split('/')
         string_data = '## Here are the Screenshots after the Latest Changes\n\n'
 
         for image in images:
-            filename, url = image['filename'], image['url']
-            string_data += f'### {filename}\n![{filename}]({url})\n'
+            display_name, filename, url = (
+                image['display_name'], image['filename'], image['url']
+            )
+            string_data += f'### {display_name}\n![{filename}]({url})\n'
 
         comment_url = (
-            f'{self.GITHUB_API_URL}/repos/{owner}/{repo}/'
+            f'{self.GITHUB_API_URL}/repos/{self.repository}/'
             f'issues/{self.pull_request_number}/comments'
         )
 
@@ -137,33 +142,49 @@ class WebsiteScreenshot:
     def _get_image_upload_service(self):
         """Get image upload service"""
         if self.upload_to == 'imgur':
-            return image_upload_services.ImageUploadService
+            return image_upload_services.ImgurImageUploadService
         elif self.upload_to == 'github_branch':
             return image_upload_services.GitHubBranchImageUploadService
         else:
             return NotImplemented
 
+    def _get_image_filename(self, display_name):
+        """Generate Filename from url or file path"""
+        return (
+            f'pr-{self.pull_request_number}-{display_name}'
+            f'-{int(time.time())}.png'
+        ).replace('/', '-').replace(' ', '')
+
     def run(self):
+        # Merge URLs and File Paths Together
+        to_capture_list = self.capture_urls + self.capture_html_file_paths
+
+        if self.capture_changed_html_files:
+            # Add Pull request changed/added HTML files to `to_capture_list`
+            changed_files = self._get_pull_request_changed_files()
+            to_capture_list += changed_files
+
+        # get Image Upload Service Class and Initialize it
         image_upload_service = self._get_image_upload_service()(
             self.repository,
             self.pull_request_number
         )
-        to_capture_list = self.capture_urls + self.capture_html_file_paths
-
-        if self.capture_changed_html_files:
-            changed_files = self._get_pull_request_changed_files()
-            to_capture_list += changed_files
 
         for item in to_capture_list:
-            filename = (
-                f'pr-{self.pull_request_number}-{item}-{int(time.time())}.png'
-            ).replace('/', '-').replace(' ', '')
+            display_name = item
+            # Generate Image Filename
+            filename = self._get_image_filename(display_name)
             print(filename)
+            # Capture Screenshot
             image_data = self._capture_screenshot(filename, item)
-            image_upload_service.add(filename, image_data)
+            # Add Image to Uploader Service
+            image_upload_service.add(display_name, filename, image_data)
 
+        print_message('Upload Screenshots', message_type='group')
         uploaded_images = image_upload_service.upload()
+        print_message('', message_type='endgroup')
 
+        # If any screenshot is uploaded comment the screenshots to the Pull Request
         if uploaded_images:
             print_message('Comment Website Screen Capture', message_type='group')
             self._comment_screenshots(uploaded_images)
@@ -189,6 +210,8 @@ if __name__ == '__main__':
         os.environ.get('INPUT_GITHUB_TOKEN')
     )
 
+    # If the workflow was not triggered by a pull request
+    # Exit the script with code 1.
     if event_name != 'pull_request':
         print_message(
             'This action only works for pull request event',
