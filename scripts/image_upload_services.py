@@ -119,7 +119,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
                 ['git', 'checkout', '-b', new_branch]
             )
 
-        subprocess.run(['git', 'add', '.'])
+        subprocess.run(['git', 'add', 'website-screenshots/'])
         subprocess.run(
             [
                 'git', 'commit',
