@@ -99,8 +99,6 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
 
         subprocess.run(['git', 'config', 'user.name', username])
         subprocess.run(['git', 'config', 'user.email', email])
-        subprocess.run(['git', 'status'])
-        subprocess.run(['git', 'diff'])
 
         subprocess.run(
             ['git', 'fetch', 'origin', '--prune', '--unshallow'],
