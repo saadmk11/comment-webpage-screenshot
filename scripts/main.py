@@ -170,7 +170,7 @@ class WebsiteScreenshot:
             self.pull_request_number
         )
 
-        for item in to_capture_list:
+        for item in set(to_capture_list):
             display_name = item
             # Generate Image Filename
             filename = self._get_image_filename(display_name)
