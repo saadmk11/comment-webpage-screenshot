@@ -76,11 +76,8 @@ class WebsiteScreenshot:
             directory = 'website-screenshots'
             os.makedirs(directory, exist_ok=True)
             screenshot_capture_command.append(f"--output={directory}/{filename}")
-        try:
-            return subprocess.check_output(screenshot_capture_command)
-        except subprocess.CalledProcessError as e:
-            print(e.output)
-            print(e.stderr)
+
+        return subprocess.check_output(screenshot_capture_command)
 
     def _get_pull_request_changed_files(self):
         """Gets changed files from the pull request"""
@@ -205,7 +202,9 @@ if __name__ == '__main__':
 
     # User inputs from workflow
     upload_to = os.environ['INPUT_UPLOAD_TO']
-    capture_changed_html_files = os.environ['INPUT_CAPTURE_CHANGED_HTML_FILES']
+    capture_changed_html_files = (
+        os.environ['INPUT_CAPTURE_CHANGED_HTML_FILES'] == 'yes'
+    )
     capture_html_file_paths = os.environ['INPUT_CAPTURE_HTML_FILE_PATHS']
     capture_urls = os.environ['INPUT_CAPTURE_URLS']
 
