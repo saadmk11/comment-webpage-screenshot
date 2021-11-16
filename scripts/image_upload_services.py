@@ -87,18 +87,15 @@ class ImgurImageUploadService(ImageUploadServiceBase):
 
 
 class GitHubBranchImageUploadService(ImageUploadServiceBase):
+    new_branch = 'website-screenshots-action-branch'
+    username = 'github-actions[bot]'
+    email = 'github-actions[bot]@users.noreply.github.com'
+    git_commit_author = f'{username} <{email}>'
 
-    def _create_new_branch(self):
-        """Create and push a new branch with the changes"""
-        print_message('Push Screenshots to GitHub Branch', message_type='group')
-        # Use timestamp to ensure uniqueness of the new branch
-        new_branch = 'website-screenshots-action-branch'
-        username = 'github-actions[bot]'
-        email = 'github-actions[bot]@users.noreply.github.com'
-        git_commit_author = f'{username} <{email}>'
-
-        subprocess.run(['git', 'config', 'user.name', username])
-        subprocess.run(['git', 'config', 'user.email', email])
+    def _setup_git_branch(self):
+        """Set Up Git Branch"""
+        subprocess.run(['git', 'config', 'user.name', self.username])
+        subprocess.run(['git', 'config', 'user.email', self.email])
 
         subprocess.run(
             ['git', 'fetch', 'origin', '--prune'],
@@ -108,30 +105,35 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             ['git', 'branch', '-r'],
         )
 
-        if new_branch in str(remote_branches):
+        if self.new_branch in str(remote_branches):
             subprocess.run(
-                ['git', 'checkout', new_branch]
+                ['git', 'checkout', self.new_branch]
             )
         else:
             subprocess.run(
-                ['git', 'checkout', '-b', new_branch]
+                ['git', 'checkout', '-b', self.new_branch]
             )
+
+    def _push_images(self):
+        """Create and push a new branch with the changes"""
+        print_message('Push Screenshots to GitHub Branch', message_type='group')
+        # Use timestamp to ensure uniqueness of the new branch
 
         subprocess.run(['git', 'add', 'website-screenshots/'])
         subprocess.run(
             [
                 'git', 'commit',
-                f'--author={git_commit_author}',
+                f'--author={self.git_commit_author}',
                 '-m',
                 '[website-screenshots-action] '
                 f'Added Screenshots for PR #{self.pull_request_number}'
             ]
         )
         subprocess.run(
-            ['git', 'push', '-u', 'origin', new_branch]
+            ['git', 'push', '-u', 'origin', self.new_branch]
         )
         print_message('', message_type='endgroup')
-        return new_branch
+        return self.new_branch
 
     def _get_github_image_url(self, filename, new_branch):
         """Get GitHub Image URL"""
@@ -148,7 +150,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             return image_urls
 
         # Create and push the changes to a new branch
-        new_branch = self._create_new_branch()
+        new_branch = self._push_images()
 
         for file in self.files_to_upload:
             filename = file['filename']

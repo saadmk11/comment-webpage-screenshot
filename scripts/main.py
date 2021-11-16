@@ -173,6 +173,9 @@ class WebsiteScreenshot:
             self.pull_request_number
         )
 
+        if to_capture_list and self.upload_to == 'github_branch':
+            image_upload_service._setup_git_branch()
+
         for item in set(to_capture_list):
             display_name = item
             # Generate Image Filename
