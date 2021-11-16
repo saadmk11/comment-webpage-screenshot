@@ -12,8 +12,7 @@ These are the inputs that can be provided on the workflow.
 
 | Name | Required | Description | Default |
 |------|----------|-------------|---------|
-| `upload_to` | No | Image Upload Service Name (Options are: `github_branch`, `imgur`) **[More Details](#available-image-upload-services)**
-| `github_branch` |
+| `upload_to` | No | Image Upload Service Name (Options are: `github_branch`, `imgur`) **[More Details](#available-image-upload-services)** | `github_branch` |
 | `capture_changed_html_files` | No | Enable or Disable Screenshot Capture for Changed HTML Files on the Pull Request (Options are: `yes`, `no`) | `yes` |
 | `capture_html_file_paths` | No | Comma Seperated paths to the HTML files to be captured (Example: `/pages/index.html, about.html`) | `null` |
 | `capture_urls` | No | Comma Seperated URLs to be captured (Example: `https://dev.example.com, https://dev.example.com/about.html`) | `null` |
@@ -64,7 +63,7 @@ If the value of `upload_to` input is `imgur` then the screenshots will be upload
 Keep in mind that the screenshots will be **public** and anyone can see them.
 Imgur also has a rate limit of how many images can be uploaded per hour.
 Refer to Imgur 's [Rate Limits](https://api.imgur.com/#limits) Docs for more details.
-This is recommended for **small open source** repositories.
+This is suitable for **small open source** repositories.
 
 Please refer to Imgur terms of service [here](https://imgur.com/tos)
 
