@@ -94,8 +94,13 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
 
     def _setup_git_branch(self):
         """Set Up Git Branch"""
+        print_message('Setup GitHub Branch', message_type='group')
         subprocess.run(['git', 'config', 'user.name', self.username])
         subprocess.run(['git', 'config', 'user.email', self.email])
+
+        subprocess.run(
+            ['git', 'fetch', 'origin', '--prune'],
+        )
 
         remote_branches = subprocess.check_output(
             ['git', 'branch', '-r'],
@@ -109,6 +114,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             subprocess.run(
                 ['git', 'checkout', '-b', self.new_branch]
             )
+        print_message('', message_type='endgroup')
 
     def _push_images(self):
         """Create and push a new branch with the changes"""
