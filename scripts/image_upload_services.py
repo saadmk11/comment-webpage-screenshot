@@ -97,10 +97,6 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
         subprocess.run(['git', 'config', 'user.name', self.username])
         subprocess.run(['git', 'config', 'user.email', self.email])
 
-        subprocess.run(
-            ['git', 'fetch', 'origin', '--prune'],
-        )
-
         remote_branches = subprocess.check_output(
             ['git', 'branch', '-r'],
         )
