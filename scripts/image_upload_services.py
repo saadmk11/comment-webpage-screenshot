@@ -47,6 +47,8 @@ class ImageUploadServiceBase:
             'url': image_url
         }]
         """
+        print_message('Upload Screenshots', message_type='group')
+
         for file in self.files_to_upload:
             filename = file['filename']
             image_url = self._upload_single_image(filename, file['data'])
@@ -60,6 +62,8 @@ class ImageUploadServiceBase:
                 )
                 # Sleep for 2 seconds after each successful image upload
                 time.sleep(2)
+
+        print_message('', message_type='endgroup')
 
         return self.image_urls
 

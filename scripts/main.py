@@ -152,9 +152,7 @@ class WebsiteScreenshot:
             # Add Image to Uploader Service
             image_upload_service.add(display_name, filename, image_data)
 
-        print_message('Upload Screenshots', message_type='group')
         uploaded_images = image_upload_service.upload()
-        print_message('', message_type='endgroup')
 
         # If any screenshot is uploaded comment the screenshots to the Pull Request
         if uploaded_images:
