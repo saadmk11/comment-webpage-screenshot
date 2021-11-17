@@ -11,20 +11,10 @@ from helpers import print_message
 class ImageUploadServiceBase:
     """Base Class for All Image Upload Services"""
 
-    def __init__(self, repository, pull_request_number):
+    def __init__(self, configuration):
+        self.configuration = configuration
         self.files_to_upload = []
-        self.repository = repository
-        self.pull_request_number = pull_request_number
         self.image_urls = []
-
-    def add(self, display_name, filename, image_data):
-        self.files_to_upload.append(
-            {
-                'display_name': display_name,
-                'filename': filename,
-                'data': image_data
-            }
-        )
 
     def _upload_single_image(self, filename, image_data):
         """
@@ -34,6 +24,15 @@ class ImageUploadServiceBase:
         Must return a image URL or None
         """
         return None
+
+    def add(self, display_name, filename, image_data):
+        self.files_to_upload.append(
+            {
+                'display_name': display_name,
+                'filename': filename,
+                'data': image_data
+            }
+        )
 
     def upload(self):
         """
@@ -104,16 +103,12 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
     AUTHOR_NAME = 'github-actions[bot]'
     AUTHOR_EMAIL = 'github-actions[bot]@users.noreply.github.com'
 
-    def __init__(self, repository, pull_request_number, github_token):
-        self.github_token = github_token
-        super().__init__(repository, pull_request_number)
-
     @cached_property
     def _request_headers(self):
         """Get headers for GitHub API request"""
         return {
             'Accept': 'application/vnd.github.v3+json',
-            'authorization': f'Bearer {self.github_token}'
+            'authorization': f'Bearer {self.configuration.GITHUB_TOKEN}'
         }
 
     def _setup_git_branch(self):
@@ -144,19 +139,19 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
     def _get_github_image_url(self, filename):
         """Get GitHub Image URL"""
         return (
-            f'https://github.com/{self.repository}/raw'
+            f'https://github.com/{self.configuration.GITHUB_REPOSITORY}/raw'
             f'/{self.BRANCH_NAME}/website-screenshots/{filename}'
         )
 
     def _upload_single_image(self, filename, image_data):
         url = (
-            f'{self.GITHUB_API_URL}/repos/{self.repository}'
+            f'{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}'
             f'/contents/website-screenshots/{filename}'
         )
         data = {
             'message': (
-                '[website-screenshots-action] '
-                f'Added Screenshots for PR #{self.pull_request_number}'
+                '[website-screenshots-action] Added Screenshots for '
+                f'PR #{self.configuration.GITHUB_PULL_REQUEST_NUMBER}'
             ),
             'content': base64.b64encode(image_data).decode("utf-8"),
             'branch': self.BRANCH_NAME,
@@ -184,8 +179,9 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             # API should return 201, otherwise show error message
             msg = (
                 f'Error while trying to upload "{filename}" to github. '
-                f'GitHub API returned error response for '
-                f'{self.repository}, status code: {response.status_code}'
+                'GitHub API returned error response for '
+                f'{self.configuration.GITHUB_REPOSITORY},'
+                f'status code: {response.status_code}'
             )
             print_message(msg, message_type='error')
             return None

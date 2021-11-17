@@ -7,8 +7,12 @@ from functools import cached_property
 
 import requests
 
-import image_upload_services
-from helpers import print_message, convert_string_to_list
+from .image_upload_services import (
+    GitHubBranchImageUploadService,
+    ImgurImageUploadService,
+)
+from .helpers import print_message
+from .config import Configuration
 
 
 class WebsiteScreenshot:
@@ -19,49 +23,19 @@ class WebsiteScreenshot:
 
     GITHUB_API_URL = 'https://api.github.com'
 
-    def __init__(
-        self,
-        token,
-        repository,
-        upload_to,
-        event_path,
-        capture_changed_html_files,
-        capture_html_file_paths=None,
-        capture_urls=None
-    ):
-        self.token = token
-        self.repository = repository
-        self.capture_changed_html_files = capture_changed_html_files
-        self.upload_to = upload_to.lower()
-        self.pull_request_number = self._get_pull_request_number(event_path)
-        self.capture_html_file_paths = (
-            convert_string_to_list(capture_html_file_paths)
-            if capture_html_file_paths else []
-        )
-        self.capture_urls = (
-            convert_string_to_list(capture_urls)
-            if capture_urls else []
-        )
-
-    @staticmethod
-    def _get_pull_request_number(event_path):
-        """Gets pull request number from `GITHUB_EVENT_PATH`"""
-        with open(event_path, 'r') as json_file:
-            # This is just a webhook payload available to the Action
-            data = json.load(json_file)
-            number = data['number']
-
-        return number
+    def __init__(self, configuration):
+        self.configuration = configuration
 
     @cached_property
     def _request_headers(self):
         """Get headers for GitHub API request"""
         return {
             'Accept': 'application/vnd.github.v3+json',
-            'authorization': f'Bearer {self.token}'
+            'authorization': f'Bearer {self.configuration.GITHUB_TOKEN}'
         }
 
-    def _capture_screenshot(self, filename, url_or_file_path):
+    @staticmethod
+    def _capture_screenshot(filename, url_or_file_path):
         """Capture a screenshot from url or file path"""
         launch_options = {"args": ["--no-sandbox"]}
         screenshot_capture_command = [
@@ -77,8 +51,8 @@ class WebsiteScreenshot:
     def _get_pull_request_changed_files(self):
         """Gets changed files from the pull request"""
         pull_request_url = (
-            f'{self.GITHUB_API_URL}/repos/{self.repository}/pulls/'
-            f'{self.pull_request_number}/files'
+            f'{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}/pulls/'
+            f'{self.configuration.GITHUB_PULL_REQUEST_NUMBER}/files'
         )
         response = requests.get(
             pull_request_url,
@@ -87,9 +61,10 @@ class WebsiteScreenshot:
         if response.status_code != 200:
             # API should return 200, otherwise show error message
             msg = (
-                f'Error while trying to get pull request data. '
-                f'GitHub API returned error response for '
-                f'{self.repository}, status code: {response.status_code}'
+                'Error while trying to get pull request data. '
+                'GitHub API returned error response for '
+                f'{self.configuration.GITHUB_REPOSITORY}, '
+                f'status code: {response.status_code}'
             )
             print_message(msg, message_type='error')
             return []
@@ -113,8 +88,8 @@ class WebsiteScreenshot:
             string_data += f'### {display_name}\n![{filename}]({url})\n'
 
         comment_url = (
-            f'{self.GITHUB_API_URL}/repos/{self.repository}/'
-            f'issues/{self.pull_request_number}/comments'
+            f'{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}/'
+            f'issues/{self.configuration.GITHUB_PULL_REQUEST_NUMBER}/comments'
         )
 
         response = requests.post(
@@ -128,45 +103,44 @@ class WebsiteScreenshot:
         if response.status_code != 201:
             # API should return 201, otherwise show error message
             msg = (
-                f'Error while trying to create a comment. '
-                f'GitHub API returned error response for '
-                f'{self.repository}, status code: {response.status_code}'
+                'Error while trying to create a comment. '
+                'GitHub API returned error response for '
+                f'{self.configuration.GITHUB_REPOSITORY}, '
+                f'status code: {response.status_code}'
             )
             print_message(msg, message_type='error')
 
     def _get_image_upload_service(self):
         """Get image upload service"""
-        if self.upload_to == 'imgur':
-            return image_upload_services.ImgurImageUploadService
-        elif self.upload_to == 'github_branch':
-            return image_upload_services.GitHubBranchImageUploadService
+        if self.configuration.UPLOAD_TO == self.configuration.UPLOAD_SERVICE_IMGUR:
+            return ImgurImageUploadService
+        elif self.configuration.UPLOAD_TO == self.configuration.UPLOAD_SERVICE_GITHUB_BRANCH:
+            return GitHubBranchImageUploadService
         else:
             return NotImplemented
 
     def _get_image_filename(self, display_name):
         """Generate Filename from url or file path"""
         return (
-            f'pr-{self.pull_request_number}-{display_name}'
+            f'pr-{self.configuration.GITHUB_PULL_REQUEST_NUMBER}-{display_name}'
             f'-{int(time.time())}.png'
         ).replace('/', '-').replace(' ', '')
 
     def run(self):
         # Merge URLs and File Paths Together
-        to_capture_list = self.capture_urls + self.capture_html_file_paths
+        to_capture_list = (
+            self.configuration.CAPTURE_URLS +
+            self.configuration.CAPTURE_HTML_FILE_PATHS
+        )
 
-        if self.capture_changed_html_files:
+        if self.configuration.CAPTURE_CHANGED_HTML_FILES:
             # Add Pull request changed/added HTML files to `to_capture_list`
             changed_files = self._get_pull_request_changed_files()
             to_capture_list += changed_files
 
-        image_upload_service_args = [self.repository, self.pull_request_number]
-
-        if self.upload_to == 'github_branch':
-            image_upload_service_args.append(self.token)
-
         # get Image Upload Service Class and Initialize it
         image_upload_service = self._get_image_upload_service()(
-            *image_upload_service_args
+            self.configuration
         )
 
         for item in set(to_capture_list):
@@ -190,31 +164,15 @@ class WebsiteScreenshot:
 
 
 if __name__ == '__main__':
-    # Default environment variable from GitHub
-    # https://docs.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables
-    event_path = os.environ['GITHUB_EVENT_PATH']
-    repository = os.environ['GITHUB_REPOSITORY']
-    event_name = os.environ['GITHUB_EVENT_NAME']
-
-    # User inputs from workflow
-    upload_to = os.environ['INPUT_UPLOAD_TO']
-    capture_changed_html_files = (
-        os.environ['INPUT_CAPTURE_CHANGED_HTML_FILES'] == 'yes'
-    )
-    capture_html_file_paths = os.environ['INPUT_CAPTURE_HTML_FILE_PATHS']
-    capture_urls = os.environ['INPUT_CAPTURE_URLS']
-
-    # Token provided by the workflow run.
-    token = (
-        os.environ.get('GITHUB_TOKEN') or
-        os.environ.get('INPUT_GITHUB_TOKEN')
-    )
+    environment = os.environ
+    configuration = Configuration.from_environment(environment)
 
     # If the workflow was not triggered by a pull request
     # Exit the script with code 1.
-    if event_name != 'pull_request':
+    if configuration.GITHUB_EVENT_NAME not in configuration.SUPPORTED_EVENT_NAMES:
         print_message(
-            'This action only works for pull request event',
+            'This action only works for '
+            f'"{configuration.SUPPORTED_EVENT_NAMES}" event(s)',
             message_type='error'
         )
         sys.exit(1)
@@ -223,15 +181,7 @@ if __name__ == '__main__':
     print_message('Website Screen Capture', message_type='group')
 
     # Initialize the Website Screen Capture
-    capture = WebsiteScreenshot(
-        token,
-        repository,
-        upload_to,
-        event_path,
-        capture_changed_html_files,
-        capture_html_file_paths=capture_html_file_paths,
-        capture_urls=capture_urls
-    )
+    capture = WebsiteScreenshot(configuration)
     # Run Website Screen Capture
     capture.run()
 
