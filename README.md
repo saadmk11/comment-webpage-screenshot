@@ -16,6 +16,7 @@ These are the inputs that can be provided on the workflow.
 | `capture_changed_html_files` | No | Enable or Disable Screenshot Capture for Changed HTML Files on the Pull Request (Options are: `yes`, `no`) | `yes` |
 | `capture_html_file_paths` | No | Comma Seperated paths to the HTML files to be captured (Example: `/pages/index.html, about.html`) | `null` |
 | `capture_urls` | No | Comma Seperated URLs to be captured (Example: `https://dev.example.com, https://dev.example.com/about.html`) | `null` |
+| `github_token` | No | `GITHUB_TOKEN` provided by the workflow run or Personal Access Token (PAT) | `github.token` |
 
 ## Example Workflow
 
@@ -44,6 +45,8 @@ jobs:
           capture_html_file_paths: "/pages/index.html, about.html"
           # Optional, the action will capture the screenshots of the urls provided in the capture_urls input.
           capture_urls: "https://dev.example.com, https://dev.example.com/about.html"
+          # Optional
+          github_token: {{ secrets.MY_GITHUB_TOKEN }}
 ```
 
 ## Available Image Upload Services

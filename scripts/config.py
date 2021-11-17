@@ -58,8 +58,8 @@ class Configuration:
         available_environment_variables = [
             'GITHUB_REPOSITORY',
             'GITHUB_REF',
-            'GITHUB_TOKEN',
             'GITHUB_EVENT_NAME',
+            'INPUT_GITHUB_TOKEN',
             'INPUT_UPLOAD_TO',
             'INPUT_CAPTURE_CHANGED_HTML_FILES',
             'INPUT_CAPTURE_HTML_FILE_PATHS',
