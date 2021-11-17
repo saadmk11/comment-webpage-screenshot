@@ -7,12 +7,12 @@ from functools import cached_property
 
 import requests
 
-from .image_upload_services import (
+from config import Configuration
+from helpers import print_message
+from image_upload_services import (
     GitHubBranchImageUploadService,
     ImgurImageUploadService,
 )
-from .helpers import print_message
-from .config import Configuration
 
 
 class WebsiteScreenshot:
@@ -169,7 +169,10 @@ if __name__ == '__main__':
 
     # If the workflow was not triggered by a pull request
     # Exit the script with code 1.
-    if configuration.GITHUB_EVENT_NAME not in configuration.SUPPORTED_EVENT_NAMES:
+    if (
+        configuration.GITHUB_EVENT_NAME
+        not in configuration.SUPPORTED_EVENT_NAMES
+    ):
         print_message(
             'This action only works for '
             f'"{configuration.SUPPORTED_EVENT_NAMES}" event(s)',
@@ -179,10 +182,8 @@ if __name__ == '__main__':
 
     # Group: Website Screen Capture
     print_message('Website Screen Capture', message_type='group')
-
     # Initialize the Website Screen Capture
     capture = WebsiteScreenshot(configuration)
     # Run Website Screen Capture
     capture.run()
-
     print_message('', message_type='endgroup')
