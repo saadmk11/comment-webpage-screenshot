@@ -155,13 +155,12 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             f'{self.GITHUB_API_URL}/repos/{self.repository}'
             f'/contents/website-screenshots/{filename}'
         )
-        content = base64.b64encode(image_data).decode("utf-8")
         data = {
             'message': (
                 '[website-screenshots-action] '
                 f'Added Screenshots for PR #{self.pull_request_number}'
             ),
-            'content': content,
+            'content': base64.b64encode(image_data).decode("utf-8"),
             'branch': self.BRANCH_NAME,
             'author': {
                 'name': self.AUTHOR_NAME,
@@ -180,7 +179,9 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
         )
 
         if response.status_code in [200, 201]:
-            return self._get_github_image_url(filename)
+            link = self._get_github_image_url(filename)
+            print_message(f'Image "{filename}" Uploaded to "{link}"')
+            return link
         else:
             # API should return 201, otherwise show error message
             msg = (
