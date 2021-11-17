@@ -55,14 +55,14 @@ These are the currently available image upload services.
 As GitHub Does not allow us to upload images to a comment using the API
 we need to rely on other services to host the screenshots.
 
-**If you want to add/use a different image upload service, please create a new issue/pull request.**
+**If you want to add/use a different image upload service, feel free create a new issue/pull request.**
 
 ### Imgur
 
 If the value of `upload_to` input is `imgur` then the screenshots will be uploaded to Imgur.
 Keep in mind that the screenshots will be **public** and anyone can see them.
 Imgur also has a rate limit of how many images can be uploaded per hour.
-Refer to Imgur 's [Rate Limits](https://api.imgur.com/#limits) Docs for more details.
+Refer to Imgur's [Rate Limits](https://api.imgur.com/#limits) Docs for more details.
 This is suitable for **small open source** repositories.
 
 Please refer to Imgur terms of service [here](https://imgur.com/tos)

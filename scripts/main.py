@@ -164,14 +164,15 @@ class WebsiteScreenshot:
             changed_files = self._get_pull_request_changed_files()
             to_capture_list += changed_files
 
+        image_upload_service_args = [self.repository, self.pull_request_number]
+
+        if self.upload_to == 'github_branch':
+            image_upload_service_args.append(self.token)
+
         # get Image Upload Service Class and Initialize it
         image_upload_service = self._get_image_upload_service()(
-            self.repository,
-            self.pull_request_number
+            *image_upload_service_args
         )
-
-        if to_capture_list and self.upload_to == 'github_branch':
-            image_upload_service._setup_git_branch()
 
         for item in set(to_capture_list):
             display_name = item
