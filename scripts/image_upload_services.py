@@ -173,7 +173,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
                 '[website-screenshots-action] '
                 f'Added Screenshots for PR #{self.pull_request_number}'
             ),
-            'content': base64.b64encode(image_data),
+            'content': str(base64.b64encode(image_data)),
             'branch': self.new_branch,
             'author': {
                 'name': self.username,
