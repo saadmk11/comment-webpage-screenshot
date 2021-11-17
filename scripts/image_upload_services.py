@@ -130,17 +130,15 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             ['git', 'branch', '-r'],
         )
 
-        if self.BRANCH_NAME in str(remote_branches):
-            subprocess.run(
-                ['git', 'checkout', self.BRANCH_NAME]
-            )
-        else:
+        if self.BRANCH_NAME not in str(remote_branches):
             subprocess.run(
                 ['git', 'checkout', '-b', self.BRANCH_NAME]
             )
-        subprocess.run(
-            ['git', 'push', '-u', 'origin', self.BRANCH_NAME]
-        )
+            subprocess.run(
+                ['git', 'push', '-u', 'origin', self.BRANCH_NAME]
+            )
+        else:
+            print_message(f'Branch "{self.BRANCH_NAME}" Already Exists')
         print_message('', message_type='endgroup')
 
     def _get_github_image_url(self, filename):
