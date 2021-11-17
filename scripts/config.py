@@ -69,6 +69,7 @@ class Configuration:
         config = {}
 
         for key, value in environment.items():
+            print(f'{key}: {value}')
             if key in available_environment_variables and value not in [None, '', []]:
                 func = getattr(cls, f'validate_{key.lower()}', None)
                 config_key = (
@@ -79,6 +80,7 @@ class Configuration:
                     config[config_key] = func(value)
                 else:
                     config[config_key] = value
+        print(config)
 
         return cls(**config)
 
