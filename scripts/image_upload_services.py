@@ -173,15 +173,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
                 f'Added Screenshots for PR #{self.pull_request_number}'
             ),
             'content': str(image_data),
-            'branch': self.new_branch,
-            'author': {
-                'name': self.username,
-                'email': self.email
-            },
-            'committer': {
-                'name': self.username,
-                'email': self.email
-            }
+            'branch': self.new_branch
         }
         print(data)
 
