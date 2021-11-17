@@ -1,3 +1,4 @@
+import base64
 import subprocess
 import time
 from functools import cached_property
@@ -167,13 +168,12 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             f'/contents/website-screenshots/{filename}'
         )
         print(url)
-        print(type(image_data))
         data = {
             'message': (
                 '[website-screenshots-action] '
                 f'Added Screenshots for PR #{self.pull_request_number}'
             ),
-            'content': image_data,
+            'content': base64.b64encode(image_data),
             'branch': self.new_branch,
             'author': {
                 'name': self.username,
@@ -188,7 +188,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
         response = requests.put(
             url,
             headers=self._request_headers,
-            data=data
+            json=data
         )
 
         print(response.json())
