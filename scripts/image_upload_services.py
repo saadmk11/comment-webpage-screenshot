@@ -164,7 +164,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
     def _upload_single_image(self, filename, image_data):
         url = (
             f'{self.GITHUB_API_URL}/repos/{self.repository}'
-            f'/contents/website-screenshots/{filename}'
+            f'/contents/test.txt'
         )
         print(url)
         data = {
@@ -172,8 +172,16 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
                 '[website-screenshots-action] '
                 f'Added Screenshots for PR #{self.pull_request_number}'
             ),
-            'content': str(image_data),
-            'branch': self.new_branch
+            'content': 'test',
+            'branch': self.new_branch,
+            # 'author': {
+            #     'name': self.username,
+            #     'email': self.email
+            # },
+            # 'committer': {
+            #     'name': self.username,
+            #     'email': self.email
+            # }
         }
         print(data)
 
