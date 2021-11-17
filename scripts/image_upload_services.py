@@ -188,7 +188,12 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             }
         )
 
-        if response.status_code != 201:
+        print(response.json())
+        print(response.status_code)
+
+        if response.status_code in [200, 201]:
+            return response.json()['download_url']
+        else:
             # API should return 201, otherwise show error message
             msg = (
                 f'Error while trying to upload "{filename}" to github. '
@@ -197,9 +202,6 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             )
             print_message(msg, message_type='error')
             return None
-        else:
-            print(response.json())
-            return response.json()['download_url']
 
     # def _get_github_image_url(self, filename, new_branch):
     #     """Get GitHub Image URL"""
