@@ -168,12 +168,13 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             f'/contents/website-screenshots/{filename}'
         )
         print(url)
+        content = base64.b64encode(image_data.encode("utf-8")).decode("utf-8")
         data = {
             'message': (
                 '[website-screenshots-action] '
                 f'Added Screenshots for PR #{self.pull_request_number}'
             ),
-            'content': str(base64.b64encode(image_data)),
+            'content': content,
             'branch': self.new_branch,
             'author': {
                 'name': self.username,
