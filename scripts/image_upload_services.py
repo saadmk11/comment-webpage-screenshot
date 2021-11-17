@@ -166,26 +166,29 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             f'{self.GITHUB_API_URL}/repos/{self.repository}'
             f'/contents/website-screenshots/{filename}'
         )
+        print(url)
+        data = {
+            'message': (
+                '[website-screenshots-action] '
+                f'Added Screenshots for PR #{self.pull_request_number}'
+            ),
+            'content': str(image_data),
+            'branch': self.new_branch,
+            'author': {
+                'name': self.username,
+                'email': self.email
+            },
+            'committer': {
+                'name': self.username,
+                'email': self.email
+            }
+        }
+        print(data)
 
         response = requests.post(
             url,
             headers=self._request_headers,
-            json={
-                'message': (
-                    '[website-screenshots-action] '
-                    f'Added Screenshots for PR #{self.pull_request_number}'
-                ),
-                'content': str(image_data),
-                'branch': self.new_branch,
-                'author': {
-                    'name': self.username,
-                    'email': self.email
-                },
-                'committer': {
-                    'name': self.username,
-                    'email': self.email
-                }
-            }
+            json=data
         )
 
         print(response.json())
