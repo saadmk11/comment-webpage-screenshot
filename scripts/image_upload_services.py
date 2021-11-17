@@ -168,7 +168,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             f'/contents/website-screenshots/{filename}'
         )
         print(url)
-        content = base64.b64encode(image_data.encode("utf-8")).decode("utf-8")
+        content = base64.b64encode(image_data).decode("utf-8")
         data = {
             'message': (
                 '[website-screenshots-action] '
