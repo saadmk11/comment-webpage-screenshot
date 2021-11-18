@@ -33,20 +33,21 @@ class Configuration:
         return [s.lstrip().rstrip() for s in string.strip().split(',') if s]
 
     @classmethod
-    def validate_input_capture_html_file_paths(cls, value):
+    def validate_capture_html_file_paths(cls, value):
         return cls.convert_string_to_list(value)
 
     @classmethod
-    def validate_input_capture_urls(cls, value):
+    def validate_capture_urls(cls, value):
         return cls.convert_string_to_list(value)
 
     @classmethod
-    def validate_input_capture_changed_html_files(cls, value):
-        return str(value).lower() in ("1", "true", "yes")
+    def validate_capture_changed_html_files(cls, value):
+        return str(value).lower() in ["1", "true", "yes"]
 
     @classmethod
-    def validate_input_upload_to(cls, value):
-        if str(value).lower() not in [
+    def validate_upload_to(cls, value):
+        value = str(value).lower()
+        if value not in [
             cls.UPLOAD_SERVICE_GITHUB_BRANCH,
             cls.UPLOAD_SERVICE_IMGUR
         ]:
@@ -55,6 +56,7 @@ class Configuration:
 
     @classmethod
     def from_environment(cls, environment):
+        """Initialize Configuration from Environment Variables"""
         available_environment_variables = [
             'GITHUB_REPOSITORY',
             'GITHUB_REF',
@@ -70,11 +72,15 @@ class Configuration:
 
         for key, value in environment.items():
             if key in available_environment_variables and value not in [None, '', []]:
-                func = getattr(cls, f'validate_{key.lower()}', None)
                 config_key = (
                     key.replace('INPUT_', '', 1)
                     if key.startswith('INPUT_') else key
                 )
+                # Get Validate method for the config key
+                func = getattr(
+                    cls, f'validate_{config_key.lower()}', None
+                )
+
                 if func:
                     config[config_key] = func(value)
                 else:
@@ -84,6 +90,7 @@ class Configuration:
 
     @property
     def GITHUB_PULL_REQUEST_NUMBER(self):
+        """Get Pull Request Number from `GITHUB_REF`"""
         if "refs/pull/" in self.GITHUB_REF:
             return int(self.GITHUB_REF.split("/")[2])
         return None

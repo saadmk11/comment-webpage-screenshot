@@ -148,7 +148,10 @@ class WebsiteScreenshot:
             # Generate Image Filename
             filename = self._get_image_filename(display_name)
             # Capture Screenshot
+            # Group: Website Screen Capture
+            print_message('Capture Screenshot', message_type='group')
             image_data = self._capture_screenshot(filename, item)
+            print_message('', message_type='endgroup')
             # Add Image to Uploader Service
             image_upload_service.add(display_name, filename, image_data)
 
@@ -162,8 +165,10 @@ class WebsiteScreenshot:
 
 
 if __name__ == '__main__':
+    print_message('Parse Configuration', message_type='group')
     environment = os.environ
     configuration = Configuration.from_environment(environment)
+    print_message('', message_type='endgroup')
 
     # If the workflow was not triggered by a pull request
     # Exit the script with code 1.
@@ -178,10 +183,7 @@ if __name__ == '__main__':
         )
         sys.exit(1)
 
-    # Group: Website Screen Capture
-    print_message('Website Screen Capture', message_type='group')
     # Initialize the Website Screen Capture
-    capture = WebsiteScreenshot(configuration)
+    action = WebsiteScreenshot(configuration)
     # Run Website Screen Capture
-    capture.run()
-    print_message('', message_type='endgroup')
+    action.run()

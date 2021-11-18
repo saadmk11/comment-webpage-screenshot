@@ -104,6 +104,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
 
     GITHUB_API_URL = 'https://api.github.com'
     BRANCH_NAME = 'website-screenshots-action-branch'
+    IMAGE_UPLOAD_DIRECTORY = 'website-screenshots'
     AUTHOR_NAME = 'github-actions[bot]'
     AUTHOR_EMAIL = 'github-actions[bot]@users.noreply.github.com'
 
@@ -144,13 +145,13 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
         """Get GitHub Image URL"""
         return (
             f'https://github.com/{self.configuration.GITHUB_REPOSITORY}/raw'
-            f'/{self.BRANCH_NAME}/website-screenshots/{filename}'
+            f'/{self.BRANCH_NAME}/{self.IMAGE_UPLOAD_DIRECTORY}/{filename}'
         )
 
     def _upload_single_image(self, filename, image_data):
         url = (
             f'{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}'
-            f'/contents/website-screenshots/{filename}'
+            f'/contents/{self.IMAGE_UPLOAD_DIRECTORY}/{filename}'
         )
         data = {
             'message': (
