@@ -85,3 +85,6 @@ Here are some comments created by this action on the Example Project:
 ![Screenshot from 2021-11-18 21-32-20](https://user-images.githubusercontent.com/24854406/142447670-e61115ec-444a-4869-b133-2b9969b681de.png)
 ![screencapture-github-saadmk11-django-demo-pull-11-2021-11-18-21_31_00](https://user-images.githubusercontent.com/24854406/142447685-22aee5cf-49f1-4c50-8908-ccad5c56514b.png)
 
+# License
+
+The code in this project is released under the [GNU GENERAL PUBLIC LICENSE Version 3](LICENSE).
