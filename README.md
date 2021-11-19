@@ -64,7 +64,7 @@ If you want to run your application development server inside the action workflo
 and capture screenshot from the local server running in side the workflow.
 You can structure the workflow `yaml` file similar to this:
 
-**Using Docker:**
+**Using Docker to Run The Application:**
 
 ```yaml
 name: Capture App Screenshot
@@ -104,7 +104,7 @@ jobs:
         capture_urls: 'http://172.17.0.1:8000/, http://172.17.0.1:8000/admin/login/'
 ```
 
-**Running Directly:**
+**Directly Running The Application:**
 ```yaml
 name: Capture App Screenshot
 
