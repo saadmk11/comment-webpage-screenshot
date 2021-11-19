@@ -60,7 +60,7 @@ jobs:
 
 ## Run Development Server and Capture Screenshots
 
-1. If you want to run your development server inside the action 
+If you want to run your application development server inside the action workflow
 and capture screenshot from the local server running in side the workflow.
 You can structure the workflow `yaml` file similar to this:
 
@@ -155,9 +155,9 @@ So, `http://localhost:8081` will become `http://172.17.0.1:8081`
 
 Examples including application code can be found here: [Example Projects](https://github.com/saadmk11/comment-website-screenshot/tree/main/examples)
 
-3. If your application has a development server that deploys changes for every pull request.
+If your application has a development server that deploys changes on every pull request.
 You can add the URLs of your development server on `capture_urls` input.
-This will let the action take screenshots after deployment.
+This will let the action capture screenshots from the external development server after deployment.
 
 **Example:**
 
