@@ -1,7 +1,7 @@
 # Website Screen Capture
 
 Website Screen Capture is a GitHub Action that takes a screenshot of
-webpages or html file paths and uploads it to a Image Upload Service
+webpages or html file paths and uploads it to an Image Upload Service
 and then comments the screenshots on the pull request that triggered the action.
 
 **Note:** This Action Only Works on a Pull Request.
@@ -37,13 +37,17 @@ jobs:
       - name: Capture Webpage Screenshot
         uses: saadmk11/comment-website-screenshot@main
         with:
-          # Optional, the action will create a new branch and push the screenshots to the branch.
-          upload_to: github_branch
-          # Optional, the action will capture the screenshots for all the changed html files on the pull request.
-          capture_changed_html_files: yes
-          # Optional, the action will capture the screenshots of the html files provided in the capture_html_file_paths input.
+          # Optional, the action will create a new branch and upload the screenshots to that branch.
+          upload_to: github_branch  # Or, imgur
+          # Optional, the action will capture screenshots for all the changed html files on the pull request.
+          capture_changed_html_files: yes  # Or, no
+          # Optional, the action will capture screenshots of the html files provided in this input.
+          # Comma seperated file paths are accepted
           capture_html_file_paths: "/pages/index.html, about.html"
-          # Optional, the action will capture the screenshots of the urls provided in the capture_urls input.
+          # Optional, the action will capture screenshots of the URLs provided in this input.
+          # You can add URLs of your development server or run the server in the previous step
+          # and add that URL here (For Example: http://172.17.0.1:8000/).
+          # Comma seperated URLs are accepted.
           capture_urls: "https://dev.example.com, https://dev.example.com/about.html"
           # Optional
           github_token: {{ secrets.MY_GITHUB_TOKEN }}
