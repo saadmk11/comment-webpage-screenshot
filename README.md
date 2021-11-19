@@ -188,8 +188,8 @@ jobs:
 
 ## Capture Screenshots for Static HTML Pages
 
-If your repository contains only static files and does not require a server to run.
-You can just put the file path of the HTML files you want to take screenshot of
+If your repository contains only static files and does not require a server.
+You can just put the file path of the HTML files you want to take screenshot of.
 
 **Example:**
 
