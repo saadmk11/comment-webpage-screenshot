@@ -25,10 +25,10 @@ class ImageUploadServiceBase:
         """
         return None
 
-    def add(self, display_name, filename, image_data):
+    def add(self, file_path, filename, image_data):
         self.images_to_upload.append(
             {
-                'display_name': display_name,
+                'file_path': file_path,
                 'filename': filename,
                 'data': image_data
             }
@@ -42,7 +42,7 @@ class ImageUploadServiceBase:
         Must return a list of dictionaries
 
         [{
-            'display_name': display_name,
+            'file_path': file_path,
             'filename': filename,
             'url': image_url
         }]
@@ -55,7 +55,7 @@ class ImageUploadServiceBase:
             if image_url:
                 self.uploaded_images.append(
                     {
-                        'display_name': file['display_name'],
+                        'file_path': file['file_path'],
                         'filename': filename,
                         'url': image_url
                     }
