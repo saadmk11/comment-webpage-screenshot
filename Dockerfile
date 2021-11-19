@@ -5,8 +5,8 @@ LABEL "com.github.actions.description"="Capture Webpage Screenshots and Comment 
 LABEL "com.github.actions.icon"="image"
 LABEL "com.github.actions.color"="blue"
 
-LABEL "repository"="https://github.com/saadmk11/webpage-screen-capture"
-LABEL "homepage"="https://github.com/saadmk11/webpage-screen-capture"
+LABEL "repository"="https://github.com/saadmk11/comment-webpage-screenshot"
+LABEL "homepage"="https://github.com/saadmk11/comment-webpage-screenshot"
 LABEL "maintainer"="saadmk11"
 
 RUN apt-get update \
