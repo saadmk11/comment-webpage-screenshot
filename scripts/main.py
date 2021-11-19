@@ -82,10 +82,10 @@ class WebsiteScreenshot:
         string_data = '## Here are the Screenshots after the Latest Changes\n\n'
 
         for image in images:
-            display_name, filename, url = (
-                image['display_name'], image['filename'], image['url']
+            file_path, filename, url = (
+                image['file_path'], image['filename'], image['url']
             )
-            string_data += f'### {display_name}\n![{filename}]({url})\n'
+            string_data += f'### {file_path}\n![{filename}]({url})\n'
 
         comment_url = (
             f'{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}/'
@@ -119,10 +119,10 @@ class WebsiteScreenshot:
         else:
             return NotImplemented
 
-    def _get_image_filename(self, display_name):
+    def _get_image_filename(self, file_path):
         """Generate Filename from url or file path"""
         return (
-            f'pr-{self.configuration.GITHUB_PULL_REQUEST_NUMBER}-{display_name}'
+            f'pr-{self.configuration.GITHUB_PULL_REQUEST_NUMBER}-{file_path}'
             f'-{int(time.time())}.png'
         ).replace('/', '-').replace(' ', '')
 
@@ -144,19 +144,19 @@ class WebsiteScreenshot:
         )
 
         for item in set(to_capture_list):
-            display_name = item
+            file_path = item
             # Generate Image Filename
-            filename = self._get_image_filename(display_name)
+            filename = self._get_image_filename(file_path)
             # Group: Website Screen Capture
             print_message(
-                f'Capture Screenshot for "{display_name}"',
+                f'Capture Screenshot for "{file_path}"',
                 message_type='group'
             )
             # Capture Screenshot
             image_data = self._capture_screenshot(filename, item)
             print_message('', message_type='endgroup')
             # Add Image to Uploader Service
-            image_upload_service.add(display_name, filename, image_data)
+            image_upload_service.add(file_path, filename, image_data)
 
         uploaded_images = image_upload_service.upload()
 

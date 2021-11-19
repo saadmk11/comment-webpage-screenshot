@@ -13,8 +13,8 @@ class ImageUploadServiceBase:
 
     def __init__(self, configuration):
         self.configuration = configuration
-        self.files_to_upload = []
-        self.image_urls = []
+        self.images_to_upload = []
+        self.uploaded_images = []
 
     def _upload_single_image(self, filename, image_data):
         """
@@ -26,7 +26,7 @@ class ImageUploadServiceBase:
         return None
 
     def add(self, display_name, filename, image_data):
-        self.files_to_upload.append(
+        self.images_to_upload.append(
             {
                 'display_name': display_name,
                 'filename': filename,
@@ -49,11 +49,11 @@ class ImageUploadServiceBase:
         """
         print_message('Upload Screenshots', message_type='group')
 
-        for file in self.files_to_upload:
+        for file in self.images_to_upload:
             filename = file['filename']
             image_url = self._upload_single_image(filename, file['data'])
             if image_url:
-                self.image_urls.append(
+                self.uploaded_images.append(
                     {
                         'display_name': file['display_name'],
                         'filename': filename,
@@ -65,7 +65,7 @@ class ImageUploadServiceBase:
 
         print_message('', message_type='endgroup')
 
-        return self.image_urls
+        return self.uploaded_images
 
 
 class ImgurImageUploadService(ImageUploadServiceBase):
@@ -193,8 +193,8 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
 
     def upload(self):
         """Upload Images to a GitHub Branch"""
-        if not self.files_to_upload:
-            return self.image_urls
+        if not self.images_to_upload:
+            return self.uploaded_images
 
         # Create a new branch
         self._setup_git_branch()
