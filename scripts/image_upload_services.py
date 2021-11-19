@@ -194,7 +194,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
     def upload(self):
         """Upload Images to a GitHub Branch"""
         if not self.images_to_upload:
-            return self.uploaded_images
+            return []
 
         # Create a new branch
         self._setup_git_branch()
