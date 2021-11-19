@@ -84,7 +84,7 @@ jobs:
     - run: docker build -t local .
     # Run the Docker Image
     # You need to run this detached (-d)
-    # so that the action can move on to the next step
+    # so that the action is not blocked and can move on to the next step
     # You Need to publish the port on the host.
     # So that it is reachable outside the container
     - run: docker run --name demo -d -p 8000:8000 local
