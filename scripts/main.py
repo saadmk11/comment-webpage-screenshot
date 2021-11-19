@@ -46,7 +46,15 @@ class WebpageScreenshotAction:
             url_or_file_path
         ]
 
-        return subprocess.check_output(screenshot_capture_command)
+        try:
+            return subprocess.check_output(screenshot_capture_command)
+        except subprocess.CalledProcessError as e:
+            msg = (
+                f'Error while trying to Capture Screenshot for "{url_or_file_path}". '
+                f'Error: {e.output}'
+            )
+            print_message(msg, message_type='error')
+            return None
 
     def _get_pull_request_changed_files(self):
         """Gets changed files from the pull request"""
@@ -156,7 +164,8 @@ class WebpageScreenshotAction:
             image_data = self._capture_screenshot(filename, item)
             print_message('', message_type='endgroup')
             # Add Image to Uploader Service
-            image_upload_service.add(file_path, filename, image_data)
+            if image_data:
+                image_upload_service.add(file_path, filename, image_data)
 
         uploaded_images = image_upload_service.upload()
 
