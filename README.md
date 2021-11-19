@@ -58,7 +58,7 @@ jobs:
           github_token: {{ secrets.MY_GITHUB_TOKEN }}
 ```
 
-## Run Development Server and Capture Screenshots
+## Run Local Development Server Inside the Workflow and Capture Screenshots
 
 If you want to run your application development server inside the action workflow
 and capture screenshot from the local server running in side the workflow.
@@ -130,6 +130,7 @@ jobs:
 
       # Run Screenshot Capture Action
       - name: Run Screenshot Capture Action
+        uses: saadmk11/comment-website-screenshot@main
         with:
           upload_to: imgur
           capture_changed_html_files: no
@@ -154,6 +155,8 @@ You need to use `172.17.0.1` so that the docker container can reach the applicat
 So, `http://localhost:8081` will become `http://172.17.0.1:8081`
 
 Examples including application code can be found here: [Example Projects](https://github.com/saadmk11/comment-website-screenshot/tree/main/examples)
+
+## Run External Development Server and Capture Screenshots
 
 If your application has a development server that deploys changes on every pull request.
 You can add the URLs of your development server on `capture_urls` input.
@@ -180,6 +183,35 @@ jobs:
         capture_changed_html_files: no
         # Add you external development server URL
         capture_urls: 'https://dev.example.com, https://dev.example.com/about.html'
+```
+
+## Capture Screenshots for Static HTML Pages
+
+If your repository contains only static files and does not require a server to run.
+You can just put the file path of the HTML files you want to take screenshot of
+
+**Example:**
+
+```yaml
+name: Capture Static Site Screenshot
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    # Run Screenshot Capture Action
+    - name: Run Screenshot Capture Action
+      uses: saadmk11/comment-website-screenshot@main
+      with:
+        upload_to: imgur
+        # Capture Screenshots of Changed HTML Files
+        capture_changed_html_files: yes
+        # Comma seperated paths to any other HTML File
+        capture_html_file_paths: "/pages/index.html, about.html"
 ```
 
 ## Available Image Upload Services
