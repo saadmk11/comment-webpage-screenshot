@@ -1,4 +1,4 @@
-name: Capture Node Express App Screenshot
+name: Comment Node Express App Screenshot
 
 on:
   pull_request:
@@ -16,7 +16,7 @@ jobs:
     - run: sleep 10
 
     - name: screenshot
-      uses: saadmk11/comment-website-screenshot@main
+      uses: saadmk11/comment-webpage-screenshot@main
       with:
         upload_to: github_branch
         capture_changed_html_files: yes

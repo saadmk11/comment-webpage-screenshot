@@ -103,8 +103,8 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
     """Service to Upload Images to GitHub Branch"""
 
     GITHUB_API_URL = 'https://api.github.com'
-    BRANCH_NAME = 'website-screenshots-action-branch'
-    IMAGE_UPLOAD_DIRECTORY = 'website-screenshots'
+    BRANCH_NAME = 'webpage-screenshot-action-branch'
+    IMAGE_UPLOAD_DIRECTORY = 'webpage-screenshots'
     AUTHOR_NAME = 'github-actions[bot]'
     AUTHOR_EMAIL = 'github-actions[bot]@users.noreply.github.com'
 
@@ -155,7 +155,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
         )
         data = {
             'message': (
-                '[website-screenshots-action] Added Screenshots for '
+                '[webpage-screenshot-action] Added Screenshots for '
                 f'PR #{self.configuration.GITHUB_PULL_REQUEST_NUMBER}'
             ),
             'content': base64.b64encode(image_data).decode("utf-8"),

@@ -1,9 +1,9 @@
-# Website Screen Capture
+# Comment Webpage Screenshot
 
-Website Screen Capture is a GitHub Action that takes screenshots of
-web pages or HTML files located in the repository,
-uploads them to an Image Upload Service and
-comments the screenshots on the pull request that triggered the action.
+Comment Webpage Screenshot is a GitHub Action that **captures screenshots** of
+**web pages** and **HTML files** located in the repository,
+uploads them to an [Image Upload Service](#available-image-upload-services) and
+**comments** the screenshots on the **pull request** that **triggered** the action.
 
 **Note:** This Action Only Works on Pull Requests.
 
@@ -22,7 +22,7 @@ These are the inputs that can be provided on the workflow.
 ## Example Workflow
 
 ```yaml
-name: Capture Webpage Screenshot
+name: Comment Webpage Screenshot
 
 on:
   pull_request:
@@ -35,8 +35,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Capture Webpage Screenshot
-        uses: saadmk11/comment-website-screenshot@main
+      - name: Comment Webpage Screenshot
+        uses: saadmk11/comment-webpage-screenshot@main
         with:
           # Optional, the action will create a new branch and
           # upload the screenshots to that branch.
@@ -61,14 +61,14 @@ jobs:
 
 ## Run Local Development Server Inside the Workflow and Capture Screenshots
 
-If you want to run your application development server inside the action workflow
-and capture screenshot from the local server running in side the workflow.
-You can structure the workflow `yaml` file similar to this:
+If you want to run your **application development server inside** the **action workflow**
+and capture screenshot from the server running inside the workflow,
+Then You can structure the workflow `yaml` file similar to this:
 
 **Using Docker to Run The Application:**
 
 ```yaml
-name: Capture App Screenshot
+name: Comment App Screenshot
 
 on:
   pull_request:
@@ -93,9 +93,9 @@ jobs:
     # Sleep for few seconds and let the container start
     - run: sleep 10
     
-    # Run Screenshot Capture Action
-    - name: Run Screenshot Capture Action
-      uses: saadmk11/comment-website-screenshot@main
+    # Run Screenshot Comment Action
+    - name: Run Screenshot Comment Action
+      uses: saadmk11/comment-webpage-screenshot@main
       with:
         upload_to: github_branch
         capture_changed_html_files: no
@@ -108,7 +108,7 @@ jobs:
 
 **Directly Running The Application:**
 ```yaml
-name: Capture App Screenshot
+name: Comment App Screenshot
 
 on:
   pull_request:
@@ -130,9 +130,9 @@ jobs:
       # Sleep for few seconds and let the container start
       - run: sleep 5
 
-      # Run Screenshot Capture Action
-      - name: Run Screenshot Capture Action
-        uses: saadmk11/comment-website-screenshot@main
+      # Run Screenshot Comment Action
+      - name: Run Screenshot Comment Action
+        uses: saadmk11/comment-webpage-screenshot@main
         with:
           upload_to: imgur
           capture_changed_html_files: no
@@ -145,29 +145,30 @@ jobs:
 
 ### Important Note:
 
-If you run the application server inside the GitHub Actions Workflow:
+If you run the application server **inside** the **GitHub Actions Workflow**:
 
-- You need to run it in the background or detached mode.
+- You need to run it in the **background** or **detached** mode.
 
-- If you are using docker to run your application you need top publish the port to
+- If you are using **docker** to run your application server you need top **publish** the **port** to
 the host (for example: `-p 8000:8000`).
 
 - you can not use `localhost` url on `capture_urls`.
-You need to use `172.17.0.1` so that the docker container can reach the application.
-So, `http://localhost:8081` will become `http://172.17.0.1:8081`
+You need to use `172.17.0.1` so that `comment-webpage-screenshot` 
+action can send request to the server running locally.
+**So, `http://localhost:8081` will become `http://172.17.0.1:8081`**
 
-Examples including application code can be found here: [Example Projects](https://github.com/saadmk11/comment-website-screenshot/tree/main/examples)
+**Examples including application code can be found here:** [Example Projects](https://github.com/saadmk11/comment-webpage-screenshot/tree/main/examples)
 
 ## Run External Development Server and Capture Screenshots
 
-If your application has a development server that deploys changes on every pull request.
+If your application has a **external development server** that deploys changes on **every pull request**.
 You can add the URLs of your development server on `capture_urls` input.
-This will let the action capture screenshots from the external development server after deployment.
+This will let the action capture screenshots from the **external development server** after deployment.
 
 **Example:**
 
 ```yaml
-name: Capture App Screenshot
+name: Comment App Screenshot
 
 on:
   pull_request:
@@ -177,9 +178,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # Run Screenshot Capture Action
-    - name: Run Screenshot Capture Action
-      uses: saadmk11/comment-website-screenshot@main
+    # Run Screenshot Comment Action
+    - name: Run Screenshot Comment Action
+      uses: saadmk11/comment-webpage-screenshot@main
       with:
         upload_to: github_branch
         capture_changed_html_files: no
@@ -189,13 +190,13 @@ jobs:
 
 ## Capture Screenshots for Static HTML Pages
 
-If your repository contains only static files and does not require a server.
-You can just put the file path of the HTML files you want to take screenshot of.
+If your repository contains **only static files** and does **not require a server**.
+You can just put the **file path** of the **HTML files** you want to capture screenshot of.
 
 **Example:**
 
 ```yaml
-name: Capture Static Site Screenshot
+name: Comment Static Site Screenshot
 
 on:
   pull_request:
@@ -205,9 +206,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # Run Screenshot Capture Action
-    - name: Run Screenshot Capture Action
-      uses: saadmk11/comment-website-screenshot@main
+    # Run Screenshot Comment Action
+    - name: Run Screenshot Comment Action
+      uses: saadmk11/comment-webpage-screenshot@main
       with:
         upload_to: imgur
         # Capture Screenshots of Changed HTML Files
@@ -218,11 +219,10 @@ jobs:
 
 ## Available Image Upload Services
 
-These are the currently available image upload services.
-As GitHub Does not allow us to upload images to a comment using the API
-we need to rely on other services to host the screenshots.
+**As GitHub Does not allow us to upload images to a comment using the API
+we need to rely on other services to host the screenshots.**
 
-**If you want to add/use a different image upload service, feel free create a new issue/pull request.**
+These are the currently available image upload services.
 
 ### Imgur
 
@@ -242,9 +242,11 @@ The screenshots on the comments will reference the Images pushed to this branch.
 
 This is suitable for **open source** and **private** repositories.
 
+**If you want to add/use a different image upload service, feel free create a new issue/pull request.**
+
 ## Examples
 
-You Can find some example use cases of this action here: [Example Projects](https://github.com/saadmk11/comment-website-screenshot/tree/main/examples)
+You Can find some example use cases of this action here: [Example Projects](https://github.com/saadmk11/comment-webpage-screenshot/tree/main/examples)
 
 Here are some comments created by this action on the Example Project:
 

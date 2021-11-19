@@ -1,5 +1,5 @@
-name: Website Screen Capture
-description: Website Screen Capture is a GitHub Action that Captures Screenshots from Website/HTML File and Comments it on Pull Request.
+name: Comment Webpage Screenshot
+description: Comment Webpage Screenshot is a GitHub Action that captures screenshots of web pages and HTML files located in the repository, uploads them to an Image Upload Service and comments the screenshots on the pull request that triggered the action.
 author: Maksudul Haque
 
 branding:
@@ -13,16 +13,16 @@ inputs:
     default: 'github_branch'
 
   capture_changed_html_files:
-    description: 'Take Screenshot of Changed/Added HTML Files. (Options: yes, no)'
+    description: 'Capture Screenshots of Changed/Added HTML Files. (Options: yes, no)'
     required: false
     default: 'yes'
 
   capture_html_file_paths:
-    description: 'Take Screenshot of HTML Files Seperated by Comma.'
+    description: 'Capture Screenshot of HTML Files Seperated by Comma.'
     required: false
 
   capture_urls:
-    description: 'Take Screenshot of URLs Seperated by Comma.'
+    description: 'Capture Screenshot of URLs Seperated by Comma.'
     required: false
 
   github_token:

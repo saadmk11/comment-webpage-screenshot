@@ -4,7 +4,7 @@ from typing import List
 
 @dataclasses.dataclass
 class Configuration:
-    """Configuration for Webpage Image Capture Action"""
+    """Configuration for Comment Webpage Screenshot Action"""
     # Default environment variable from GitHub
     # https://docs.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables
     GITHUB_REF: str

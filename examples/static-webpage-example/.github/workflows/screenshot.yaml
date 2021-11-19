@@ -1,4 +1,4 @@
-name: Capture Webpage Screenshot
+name: Comment Webpage Screenshot
 
 on:
   pull_request:
@@ -11,8 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Capture Webpage Screenshot
-        uses: saadmk11/comment-website-screenshot@main
+      - name: Comment Webpage Screenshot
+        uses: saadmk11/comment-webpage-screenshot@main
         with:
           upload_to: imgur
           capture_html_file_paths: "index.html"

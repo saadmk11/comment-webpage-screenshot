@@ -15,9 +15,9 @@ from image_upload_services import (
 )
 
 
-class WebsiteScreenshot:
+class WebpageScreenshotAction:
     """
-    Capture Screenshots from Website URL/HTML File Path
+    Capture Screenshots from Webpage URL/HTML File Path
     and Comment it on Pull Request.
     """
 
@@ -138,7 +138,7 @@ class WebsiteScreenshot:
             changed_files = self._get_pull_request_changed_files()
             to_capture_list += changed_files
 
-        # get Image Upload Service Class and Initialize it
+        # Get Image Upload Service Class and Initialize it
         image_upload_service = self._get_image_upload_service()(
             self.configuration
         )
@@ -147,7 +147,7 @@ class WebsiteScreenshot:
             file_path = item
             # Generate Image Filename
             filename = self._get_image_filename(file_path)
-            # Group: Website Screen Capture
+            # Group: Webpage Screen Capture
             print_message(
                 f'Capture Screenshot for "{file_path}"',
                 message_type='group'
@@ -162,7 +162,7 @@ class WebsiteScreenshot:
 
         # If any screenshot is uploaded comment the screenshots to the Pull Request
         if uploaded_images:
-            print_message('Comment Website Screen Capture', message_type='group')
+            print_message('Comment Webpage Screenshot', message_type='group')
             self._comment_screenshots(uploaded_images)
             print_message('', message_type='endgroup')
 
@@ -186,7 +186,7 @@ if __name__ == '__main__':
         )
         sys.exit(1)
 
-    # Initialize the Website Screen Capture
-    action = WebsiteScreenshot(configuration)
-    # Run Website Screen Capture
+    # Initialize the Webpage Screenshot Action
+    action = WebpageScreenshotAction(configuration)
+    # Run Action
     action.run()
