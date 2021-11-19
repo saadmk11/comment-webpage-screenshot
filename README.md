@@ -1,8 +1,9 @@
 # Website Screen Capture
 
 Website Screen Capture is a GitHub Action that takes screenshots of
-webpages or html file located in the repository, uploads it to an Image Upload Service
-and comments the screenshots on the pull request that triggered the action.
+web pages or HTML files located in the repository,
+uploads them to an Image Upload Service and
+comments the screenshots on the pull request that triggered the action.
 
 **Note:** This Action Only Works on Pull Requests.
 
