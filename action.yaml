@@ -1,5 +1,5 @@
 name: Comment Webpage Screenshot
-description: Comment Webpage Screenshot is a GitHub Action that captures screenshots of web pages and HTML files located in the repository, uploads them to an Image Upload Service and comments the screenshots on the pull request that triggered the action.
+description: A GitHub Action that captures screenshots of webpages and HTML files in the repository and comments them on the pull request
 author: Maksudul Haque
 
 branding:
