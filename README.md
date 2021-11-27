@@ -79,31 +79,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout your pull request code
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
     
-    # Build Development Docker Image
-    - run: docker build -t local .
-    # Run the Docker Image
-    # You need to run this detached (-d)
-    # so that the action is not blocked
-    # and can move on to the next step
-    # You Need to publish the port on the host (-p 8000:8000)
-    # So that it is reachable outside the container
-    - run: docker run --name demo -d -p 8000:8000 local
-    # Sleep for few seconds and let the container start
-    - run: sleep 10
-    
-    # Run Screenshot Comment Action
-    - name: Run Screenshot Comment Action
-      uses: saadmk11/comment-webpage-screenshot@main
-      with:
-        upload_to: github_branch
-        capture_changed_html_files: no
-        # You must use `172.17.0.1` if you are running
-        # the application locally inside the workflow
-        # Otherwise the container which will run this action 
-        # will not be able to reach the application
-        capture_urls: 'http://172.17.0.1:8000/, http://172.17.0.1:8000/admin/login/'
+      # Build Development Docker Image
+      - run: docker build -t local .
+      # Run the Docker Image
+      # You need to run this detached (-d)
+      # so that the action is not blocked
+      # and can move on to the next step
+      # You Need to publish the port on the host (-p 8000:8000)
+      # So that it is reachable outside the container
+      - run: docker run --name demo -d -p 8000:8000 local
+      # Sleep for few seconds and let the container start
+      - run: sleep 10
+
+      # Run Screenshot Comment Action
+      - name: Run Screenshot Comment Action
+        uses: saadmk11/comment-webpage-screenshot@main
+        with:
+          upload_to: github_branch
+          capture_changed_html_files: no
+          # You must use `172.17.0.1` if you are running
+          # the application locally inside the workflow
+          # Otherwise the container which will run this action 
+          # will not be able to reach the application
+          capture_urls: 'http://172.17.0.1:8000/, http://172.17.0.1:8000/admin/login/'
 ```
 
 **Directly Running The Application:**
@@ -118,6 +118,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Checkout your pull request code
       - uses: actions/checkout@v2
 
       - name: Use Node.js
@@ -178,14 +179,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # Run Screenshot Comment Action
-    - name: Run Screenshot Comment Action
-      uses: saadmk11/comment-webpage-screenshot@main
-      with:
-        upload_to: github_branch
-        capture_changed_html_files: no
-        # Add you external development server URL
-        capture_urls: 'https://dev.example.com, https://dev.example.com/about.html'
+      # Checkout your pull request code
+      - uses: actions/checkout@v2
+
+      # Run Screenshot Comment Action
+      - name: Run Screenshot Comment Action
+        uses: saadmk11/comment-webpage-screenshot@main
+        with:
+          upload_to: github_branch
+          capture_changed_html_files: no
+          # Add you external development server URL
+          capture_urls: 'https://dev.example.com, https://dev.example.com/about.html'
 ```
 
 ## Capture Screenshots for Static HTML Pages
@@ -206,15 +210,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # Run Screenshot Comment Action
-    - name: Run Screenshot Comment Action
-      uses: saadmk11/comment-webpage-screenshot@main
-      with:
-        upload_to: imgur
-        # Capture Screenshots of Changed HTML Files
-        capture_changed_html_files: yes
-        # Comma seperated paths to any other HTML File
-        capture_html_file_paths: "/pages/index.html, about.html"
+      # Checkout your pull request code
+      - uses: actions/checkout@v2
+
+      # Run Screenshot Comment Action
+      - name: Run Screenshot Comment Action
+        uses: saadmk11/comment-webpage-screenshot@main
+        with:
+          upload_to: imgur
+          # Capture Screenshots of Changed HTML Files
+          capture_changed_html_files: yes
+          # Comma seperated paths to any other HTML File
+          capture_html_file_paths: "/pages/index.html, about.html"
 ```
 
 ## Available Image Upload Services
