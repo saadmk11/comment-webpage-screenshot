@@ -1,4 +1,4 @@
-FROM nikolaik/python-nodejs:python3.8-nodejs16
+FROM nikolaik/python-nodejs:python3.10-nodejs16
 
 LABEL "com.github.actions.name"="Comment Webpage Screenshot"
 LABEL "com.github.actions.description"="Capture Webpage Screenshots and Comment on Pull Request."
