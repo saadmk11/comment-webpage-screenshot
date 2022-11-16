@@ -34,57 +34,6 @@ class WebpageScreenshotAction:
             'authorization': f'Bearer {self.configuration.GITHUB_TOKEN}'
         }
 
-    @staticmethod
-    def _capture_screenshot(filename, url_or_file_path):
-        """Capture a screenshot from url or file path"""
-        launch_options = {"args": ["--no-sandbox"]}
-        screenshot_capture_command = [
-            "capture-website",
-            "--launch-options",
-            f"{json.dumps(launch_options)}",
-            "--full-page",
-            url_or_file_path
-        ]
-
-        try:
-            return subprocess.check_output(screenshot_capture_command)
-        except subprocess.CalledProcessError as e:
-            msg = (
-                f'Error while trying to Capture Screenshot for "{url_or_file_path}". '
-                f'Error: {e.output}'
-            )
-            print_message(msg, message_type='error')
-            return None
-
-    def _get_pull_request_changed_files(self):
-        """Gets changed files from the pull request"""
-        pull_request_url = (
-            f'{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}/pulls/'
-            f'{self.configuration.GITHUB_PULL_REQUEST_NUMBER}/files'
-        )
-        response = requests.get(
-            pull_request_url,
-            headers=self._request_headers
-        )
-        if response.status_code != 200:
-            # API should return 200, otherwise show error message
-            msg = (
-                'Error while trying to get pull request data. '
-                'GitHub API returned error response for '
-                f'{self.configuration.GITHUB_REPOSITORY}, '
-                f'status code: {response.status_code}'
-            )
-            print_message(msg, message_type='error')
-            return []
-
-        # Return changed/added html files
-        return [
-            file['filename']
-            for file in response.json()
-            if file['filename'].endswith('.html')
-            and file['status'] != 'removed'
-        ]
-
     def _comment_screenshots(self, images):
         """Comments Screenshots to the pull request"""
         string_data = '## Here are the Screenshots after the Latest Changes\n\n'
@@ -135,37 +84,17 @@ class WebpageScreenshotAction:
         ).replace('/', '-').replace(' ', '')
 
     def run(self):
-        # Merge URLs and File Paths Together
-        to_capture_list = (
-            self.configuration.CAPTURE_URLS +
-            self.configuration.CAPTURE_HTML_FILE_PATHS
-        )
-
-        if self.configuration.CAPTURE_CHANGED_HTML_FILES:
-            # Add Pull request changed/added HTML files to `to_capture_list`
-            changed_files = self._get_pull_request_changed_files()
-            to_capture_list += changed_files
 
         # Get Image Upload Service Class and Initialize it
         image_upload_service = self._get_image_upload_service()(
             self.configuration
         )
 
-        for item in set(to_capture_list):
+        for item in set(self.configuration.IMAGES_LIST):
             file_path = item
             # Generate Image Filename
             filename = self._get_image_filename(file_path)
-            # Group: Webpage Screen Capture
-            print_message(
-                f'Capture Screenshot for "{file_path}"',
-                message_type='group'
-            )
-            # Capture Screenshot
-            image_data = self._capture_screenshot(filename, item)
-            print_message('', message_type='endgroup')
-            # Add Image to Uploader Service
-            if image_data:
-                image_upload_service.add(file_path, filename, image_data)
+            image_upload_service.add(file_path, filename, image_data=open(file_path, "rb"))
 
         uploaded_images = image_upload_service.upload()
 

@@ -1,6 +1,6 @@
-name: Comment Webpage Screenshot
-description: A GitHub Action that captures screenshots of webpages and HTML files in the repository and comments them on the pull request
-author: Maksudul Haque
+name: Comment with image
+description: A GitHub Action to comment a Pull Request with images
+author: Maksudul Haque / Olivier Dalang
 
 branding:
   icon: 'image'
@@ -8,22 +8,13 @@ branding:
 
 inputs:
   upload_to:
-    description: 'Service to use for uploading the screenshots. (Options: github_branch, imgur)'
+    description: 'Service to use for uploading the images. (Options: github_branch, imgur)'
     required: false
     default: 'github_branch'
 
-  capture_changed_html_files:
-    description: 'Capture Screenshots of Changed/Added HTML Files. (Options: yes, no)'
-    required: false
-    default: 'yes'
-
-  capture_html_file_paths:
-    description: 'Capture Screenshot of HTML Files Seperated by Comma.'
-    required: false
-
-  capture_urls:
-    description: 'Capture Screenshot of URLs Seperated by Comma.'
-    required: false
+  images_list:
+    description: 'List of files to attach separated by comma.'
+    required: true
 
   github_token:
     description: 'GITHUB_TOKEN or Personal Access Token (PAT)'
