@@ -21,7 +21,7 @@ class Configuration:
     )
 
     UPLOAD_TO: str = UPLOAD_SERVICE_GITHUB_BRANCH
-    IMAGES_LIST: List[str] = dataclasses.field(default_factory=list)
+    IMAGES: List[str] = dataclasses.field(default_factory=list)
 
     @staticmethod
     def convert_string_to_list(string):
