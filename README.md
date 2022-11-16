@@ -1,6 +1,6 @@
-# Comment Webpage Screenshot
+# Attach image to comment
 
-Comment Webpage Screenshot is a GitHub Action that takes a list of images,
+Comment with image is a GitHub Action that takes a list of images,
 uploads them to an [Image Upload Service](#available-image-upload-services) and
 **comments** the screenshots on the **pull request** that **triggered** the action.
 
