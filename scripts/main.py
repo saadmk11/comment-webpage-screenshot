@@ -91,7 +91,7 @@ class WebpageScreenshotAction:
             self.configuration
         )
 
-        for pattern in set(self.configuration.IMAGES_LIST):
+        for pattern in set(self.configuration.IMAGES):
             files_paths = glob.glob(pattern, recursive=True)
             for file_path in files_paths:
                 # Generate Image Filename
