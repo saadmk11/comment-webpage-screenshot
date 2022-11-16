@@ -96,7 +96,8 @@ class WebpageScreenshotAction:
             for file_path in files_paths:
                 # Generate Image Filename
                 filename = self._get_image_filename(file_path)
-                image_upload_service.add(file_path, filename, image_data=open(file_path, "rb"))
+                image_data = open(file_path, "rb").read()
+                image_upload_service.add(file_path, filename, image_data)
 
         uploaded_images = image_upload_service.upload()
 
