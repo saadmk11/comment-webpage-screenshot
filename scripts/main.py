@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import sys
+import glob
 import time
 from functools import cached_property
 
@@ -90,11 +91,12 @@ class WebpageScreenshotAction:
             self.configuration
         )
 
-        for item in set(self.configuration.IMAGES_LIST):
-            file_path = item
-            # Generate Image Filename
-            filename = self._get_image_filename(file_path)
-            image_upload_service.add(file_path, filename, image_data=open(file_path, "rb"))
+        for pattern in set(self.configuration.IMAGES_LIST):
+            files_paths = glob.glob(pattern, recursive=True)
+            for file_path in files_paths:
+                # Generate Image Filename
+                filename = self._get_image_filename(file_path)
+                image_upload_service.add(file_path, filename, image_data=open(file_path, "rb"))
 
         uploaded_images = image_upload_service.upload()
 

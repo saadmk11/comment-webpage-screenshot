@@ -15,7 +15,7 @@ These are the inputs that can be provided on the workflow.
 | Name | Required | Description | Default |
 |------|----------|-------------|---------|
 | `upload_to` | No | Image Upload Service Name (Options are: `github_branch`, `imgur`) **[More Details](#available-image-upload-services)** | `github_branch` |
-| `images_list` | Yes | Comma Seperated files to be added (Example: `output/image.gif, output/flow.png`) | `null` |
+| `images` | Yes | Comma separated lists of artifacts to upload (supports glob patterns: `tests_artifacts/**/*.gif, tests_artifacts/**/*.png`) | `null` |
 | `github_token` | No | `GITHUB_TOKEN` provided by the workflow run or Personal Access Token (PAT) | `github.token` |
 
 ## Example Workflow
@@ -44,7 +44,7 @@ jobs:
           # upload the screenshots to that branch.
           upload_to: github_branch  # Or, imgur
           # Comma seperated list of files to upload.
-          images_list: "artifacts/image.png, artifacts/actions.gif"
+          images: "tests_artifacts/**/*.gif, tests_artifacts/**/*.png"
           # Optional
           github_token: {{ secrets.MY_GITHUB_TOKEN }}
 ```

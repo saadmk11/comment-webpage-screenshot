@@ -12,8 +12,8 @@ inputs:
     required: false
     default: 'github_branch'
 
-  images_list:
-    description: 'List of files to attach separated by comma.'
+  images:
+    description: 'Comma separated lists of artifacts to upload (supports glob patterns: `tests_artifacts/**/*.gif, tests_artifacts/**/*.png`)'
     required: true
 
   github_token:

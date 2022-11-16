@@ -31,7 +31,7 @@ class Configuration:
         return [s.lstrip().rstrip() for s in string.strip().split(',') if s]
 
     @classmethod
-    def validate_images_list(cls, value):
+    def validate_images(cls, value):
         return cls.convert_string_to_list(value)
 
     @classmethod
@@ -53,7 +53,7 @@ class Configuration:
             'GITHUB_EVENT_NAME',
             'INPUT_GITHUB_TOKEN',
             'INPUT_UPLOAD_TO',
-            'INPUT_IMAGES_LIST'
+            'INPUT_IMAGES'
         ]
 
         config = {}
