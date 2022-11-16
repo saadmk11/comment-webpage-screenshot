@@ -38,7 +38,7 @@ jobs:
         run: ...
 
       - name: Comment Webpage Screenshot
-        uses: olivierdalang/comment-pr-with-images@upload_only
+        uses: opengisch/comment-pr-with-images@upload_only
         with:
           # Optional, the action will create a new branch and
           # upload the screenshots to that branch.
