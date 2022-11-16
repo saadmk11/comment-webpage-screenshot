@@ -15,6 +15,6 @@ jobs:
         run: mkdir output && wget https://picsum.photos/200/200.jpg -o output/image.jpg
 
       - name: Attach comment to PR
-        uses: "."
+        uses: "./"
         with:
           images: "output/**/*.jpg"
