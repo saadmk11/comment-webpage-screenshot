@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Generate an image
-        run: mkdir output && wget https://picsum.photos/200/200.jpg -o output/image.jpg
+        run: mkdir output && wget https://picsum.photos/200/200.jpg -O output/image.jpg
 
       - name: Attach comment to PR
         uses: "./"
