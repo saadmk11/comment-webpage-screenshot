@@ -43,7 +43,7 @@ class WebpageScreenshotAction:
             file_path, filename, url = (
                 image['file_path'], image['filename'], image['url']
             )
-            string_data += f'### {file_path}\n![{filename}]({url})\n'
+            string_data += f'### {file_path}\n<kbd> ![{filename}]({url})\n'
 
         comment_url = (
             f'{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}/'
