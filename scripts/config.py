@@ -25,6 +25,8 @@ class Configuration:
 
     UPLOAD_TO: str = UPLOAD_SERVICE_GITHUB_BRANCH
     IMAGES: List[str] = dataclasses.field(default_factory=list)
+    CUSTOM_ATTACHMENT_MSG: str = "Screenshots for commit"
+    EDIT_PREVIOUS_COMMENT: bool = True
 
     @staticmethod
     def convert_string_to_list(string):
@@ -45,6 +47,16 @@ class Configuration:
         return value
 
     @classmethod
+    def validate_custom_attachment_msg(cls, value):
+        if not value:
+            raise ValueError("CUSTOM_ATTACHMENT_MSG cannot be an empty string!")
+
+    @classmethod
+    def validate_edit_previous_comment(cls, value):
+        if not isinstance(value, bool):
+            return value.lower() == "true"
+
+    @classmethod
     def from_environment(cls, environment):
         """Initialize Configuration from Environment Variables"""
         available_environment_variables = [
@@ -56,6 +68,8 @@ class Configuration:
             "INPUT_GITHUB_TOKEN",
             "INPUT_UPLOAD_TO",
             "INPUT_IMAGES",
+            "INPUT_CUSTOM_ATTACHMENT_MSG",
+            "INPUT_EDIT_PREVIOUS_COMMENT",
         ]
 
         config = {}

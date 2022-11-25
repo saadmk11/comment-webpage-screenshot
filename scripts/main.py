@@ -1,9 +1,9 @@
 import glob
-from itertools import islice
 import os
 import sys
 import time
 from functools import cached_property
+from itertools import islice
 
 import requests
 from config import Configuration
@@ -40,8 +40,8 @@ class WebpageScreenshotAction:
             f"actions/runs/{self.configuration.GITHUB_RUN_ID}"
         )
 
-        string_data = f"## Here are the Screenshots for commit `{self.configuration.GITHUB_SHA}`. \
-            You can inspect the workflow run at {run_url}. \n\n"
+        string_data = f"{self.configuration.CUSTOM_ATTACHMENT_MSG} `{self.configuration.GITHUB_SHA}`. \
+            _You can inspect the workflow run at {run_url}_. \n\n"
 
         for image in sorted(images, key=lambda image: image["filename"]):
             file_path, filename, url = (
@@ -70,10 +70,12 @@ class WebpageScreenshotAction:
             )
             print_message(msg, message_type="error")
         else:
-            comment = response.json()
-            self._deprecate_previous_if_any(
-                just_received_comment_id=comment["id"], latest_url=comment["html_url"]
-            )
+            if self.configuration.EDIT_PREVIOUS_COMMENT:
+                comment = response.json()
+                self._deprecate_previous_if_any(
+                    latest_issue_url=comment["issue_url"],
+                    latest_comment_url=comment["html_url"],
+                )
 
     def _get_image_upload_service(self):
         """Get image upload service"""
@@ -99,10 +101,10 @@ class WebpageScreenshotAction:
         )
 
     def _deprecate_previous_if_any(
-        self, just_received_comment_id: int, latest_url: str
+        self, latest_issue_url: str, latest_comment_url: str
     ):
         """Tell the previous comment about the new one."""
-        deprecation_notice = f"__DEPRECATED__: _This screenshot is no longer up-to-date. The latest version can be found [here]({latest_url})_"
+        deprecation_notice = f"__DEPRECATED__: _This screenshot is no longer up-to-date. The latest version can be found [here]({latest_comment_url})_."
 
         url_list_comments_in_issue = (
             f"{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}/"
@@ -119,21 +121,26 @@ class WebpageScreenshotAction:
             )
             return
 
-        if comments := response.json():
-
-            comments_from_a_bot = filter(
-                lambda c: c["user"]["login"] == "github-actions[bot]", comments
+        elif comments := response.json():
+            # get the latest 2 comments from a bot if any
+            # FIX ME: What if there are multiple bots posting across Issues / PRs?
+            from_bot_same_issue_or_pr = filter(
+                lambda c: c["user"]["login"] == "github-actions[bot]"
+                and c["issue_url"] == latest_issue_url,
+                comments,
             )
             last_comments = list(
                 islice(
                     sorted(
-                        comments_from_a_bot, key=lambda c: c["created_at"], reverse=True
+                        from_bot_same_issue_or_pr,
+                        key=lambda c: c["created_at"],
+                        reverse=True,
                     ),
                     2,
                 )
             )
 
-            if len(last_comments) < 2:
+            if len(last_comments) != 2:
                 print_message(
                     "This is the latest commented batch of screenshots, you're all good!"
                 )

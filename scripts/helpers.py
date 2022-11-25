@@ -1,6 +1,5 @@
 import subprocess
 
-
 def print_message(message, message_type=None):
     """Helper function to print colorful outputs in GitHub Actions shell"""
     # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions

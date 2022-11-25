@@ -4,7 +4,6 @@ import time
 from functools import cached_property
 
 import requests
-
 from helpers import print_message
 
 
