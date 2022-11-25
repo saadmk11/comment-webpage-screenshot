@@ -5,19 +5,22 @@ from typing import List
 @dataclasses.dataclass
 class Configuration:
     """Configuration for Comment Webpage Screenshot Action"""
+
     # Default environment variable from GitHub
     # https://docs.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables
     GITHUB_REF: str
     GITHUB_REPOSITORY: str
     GITHUB_TOKEN: str
     GITHUB_EVENT_NAME: str
+    GITHUB_RUN_ID: str
+    GITHUB_SHA: str
 
-    UPLOAD_SERVICE_GITHUB_BRANCH: str = 'github_branch'
-    UPLOAD_SERVICE_IMGUR: str = 'imgur'
+    UPLOAD_SERVICE_GITHUB_BRANCH: str = "github_branch"
+    UPLOAD_SERVICE_IMGUR: str = "imgur"
 
-    PULL_REQUEST_EVENT: str = 'pull_request'
+    PULL_REQUEST_EVENT: str = "pull_request"
     SUPPORTED_EVENT_NAMES: list = dataclasses.field(
-        default_factory=lambda: ['pull_request']
+        default_factory=lambda: ["pull_request"]
     )
 
     UPLOAD_TO: str = UPLOAD_SERVICE_GITHUB_BRANCH
@@ -28,7 +31,7 @@ class Configuration:
         """Helper method to convert a comma seperated string to a list"""
         if not isinstance(string, str):
             return []
-        return [s.lstrip().rstrip() for s in string.strip().split(',') if s]
+        return [s.lstrip().rstrip() for s in string.strip().split(",") if s]
 
     @classmethod
     def validate_images(cls, value):
@@ -37,10 +40,7 @@ class Configuration:
     @classmethod
     def validate_upload_to(cls, value):
         value = str(value).lower()
-        if value not in [
-            cls.UPLOAD_SERVICE_GITHUB_BRANCH,
-            cls.UPLOAD_SERVICE_IMGUR
-        ]:
+        if value not in [cls.UPLOAD_SERVICE_GITHUB_BRANCH, cls.UPLOAD_SERVICE_IMGUR]:
             return cls.UPLOAD_SERVICE_GITHUB_BRANCH
         return value
 
@@ -48,26 +48,25 @@ class Configuration:
     def from_environment(cls, environment):
         """Initialize Configuration from Environment Variables"""
         available_environment_variables = [
-            'GITHUB_REPOSITORY',
-            'GITHUB_REF',
-            'GITHUB_EVENT_NAME',
-            'INPUT_GITHUB_TOKEN',
-            'INPUT_UPLOAD_TO',
-            'INPUT_IMAGES'
+            "GITHUB_REPOSITORY",
+            "GITHUB_REF",
+            "GITHUB_EVENT_NAME",
+            "GITHUB_RUN_ID",
+            "GITHUB_SHA",
+            "INPUT_GITHUB_TOKEN",
+            "INPUT_UPLOAD_TO",
+            "INPUT_IMAGES",
         ]
 
         config = {}
 
         for key, value in environment.items():
-            if key in available_environment_variables and value not in [None, '', []]:
+            if key in available_environment_variables and value not in [None, "", []]:
                 config_key = (
-                    key.replace('INPUT_', '', 1)
-                    if key.startswith('INPUT_') else key
+                    key.replace("INPUT_", "", 1) if key.startswith("INPUT_") else key
                 )
                 # Get Validate method for the config key
-                func = getattr(
-                    cls, f'validate_{config_key.lower()}', None
-                )
+                func = getattr(cls, f"validate_{config_key.lower()}", None)
 
                 if func:
                     config[config_key] = func(value)
