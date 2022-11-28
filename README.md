@@ -80,7 +80,7 @@ jobs:
     steps:
       # Checkout your pull request code
       - uses: actions/checkout@v2
-    
+
       # Build Development Docker Image
       - run: docker build -t local .
       # Run the Docker Image
@@ -101,7 +101,7 @@ jobs:
           capture_changed_html_files: no
           # You must use `172.17.0.1` if you are running
           # the application locally inside the workflow
-          # Otherwise the container which will run this action 
+          # Otherwise the container which will run this action
           # will not be able to reach the application
           capture_urls: 'http://172.17.0.1:8000/, http://172.17.0.1:8000/admin/login/'
 ```
@@ -139,7 +139,7 @@ jobs:
           capture_changed_html_files: no
           # You must use `172.17.0.1` if you are running
           # the application locally inside the workflow
-          # Otherwise, the container which will run this action 
+          # Otherwise, the container which will run this action
           # will not be able to reach the application
           capture_urls: 'http://172.17.0.1:8081'
 ```
@@ -154,7 +154,7 @@ If you run the application server **inside** the **GitHub Actions Workflow**:
 the host (for example: `-p 8000:8000`).
 
 - you can not use `localhost` url on `capture_urls`.
-You need to use `172.17.0.1` so that `comment-webpage-screenshot` 
+You need to use `172.17.0.1` so that `comment-webpage-screenshot`
 action can send request to the server running locally.
 **So, `http://localhost:8081` will become `http://172.17.0.1:8081`**
 

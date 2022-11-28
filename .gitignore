@@ -138,3 +138,6 @@ dmypy.json
 cython_debug/
 
 .idea/
+.vscode/
+Pipfile
+Pipfile.lock
