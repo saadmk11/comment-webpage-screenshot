@@ -22,9 +22,7 @@ class Configuration:
     )
 
     UPLOAD_TO: str = UPLOAD_SERVICE_GITHUB_BRANCH
-    CAPTURE_HTML_FILE_PATHS: List[str] = dataclasses.field(default_factory=list)
-    CAPTURE_URLS: List[str] = dataclasses.field(default_factory=list)
-    CAPTURE_CHANGED_HTML_FILES: bool = True
+    IMAGES: List[str] = dataclasses.field(default_factory=list)
 
     @staticmethod
     def convert_string_to_list(string):
@@ -34,16 +32,8 @@ class Configuration:
         return [s.lstrip().rstrip() for s in string.strip().split(",") if s]
 
     @classmethod
-    def validate_capture_html_file_paths(cls, value):
+    def validate_images(cls, value):
         return cls.convert_string_to_list(value)
-
-    @classmethod
-    def validate_capture_urls(cls, value):
-        return cls.convert_string_to_list(value)
-
-    @classmethod
-    def validate_capture_changed_html_files(cls, value):
-        return str(value).lower() in ["1", "true", "yes"]
 
     @classmethod
     def validate_upload_to(cls, value):

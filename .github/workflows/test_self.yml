@@ -1,0 +1,24 @@
+name: Comment Webpage Screenshot
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate an image
+        run: |
+          mkdir output
+          wget https://picsum.photos/200/200.jpg -O output/a.jpg
+          wget https://picsum.photos/200/200.jpg -O output/b.jpg
+          wget https://picsum.photos/200/200.jpg -O output/c.jpg
+
+      - name: Attach comment to PR
+        uses: "./"
+        with:
+          images: "output/**/*.jpg"
