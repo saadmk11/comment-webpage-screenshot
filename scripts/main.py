@@ -92,10 +92,7 @@ class WebpageScreenshotAction:
     def _get_image_filename(self, file_path):
         """Generate Filename from url or file path"""
         return (
-            (
-                f"pr-{self.configuration.GITHUB_PULL_REQUEST_NUMBER}-{file_path}"
-                f"-{int(time.time())}.png"
-            )
+            (f"pr-{self.configuration.GITHUB_PULL_REQUEST_NUMBER}-{file_path}")
             .replace("/", "-")
             .replace(" ", "")
         )
