@@ -48,11 +48,27 @@ class WebpageScreenshotAction:
                 image["filename"],
                 image["url"],
             )
-            gh_media_url_embedding = (
-                f"<kbd>![{filename}]({url})</kbd>"
-                if any(f in filename[-4:] for f in ["png", "jpg", "jpeg", "gif"])
-                else url
-            )
+            has_extension = filename[-4:]
+
+            if any(f in has_extension for f in ["png", "jpg", "jpeg", "gif"]):
+                gh_media_url_embedding = f"<kbd>![{filename}]({url})</kbd>"
+
+            elif ext := next(
+                filter(lambda f: f in has_extension, ["webm", "mp4"]), None
+            ):
+                gh_media_url_embedding = f"""
+                <video controls>
+                    <source src="{url}" type="video/{ext}" />
+                    <source src="{url}" type="video/{ext}" />
+                    <p>
+                        Your browser doesn't support HTML video. Here is a
+                        <a href="{url}">link to the video</a> instead.
+                    </p>
+                </video>
+                """
+            else:
+                gh_media_url_embedding = url
+
             comment_body += f"### {file_path}\n{gh_media_url_embedding}\n"
 
         comment_url = (
