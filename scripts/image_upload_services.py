@@ -1,5 +1,6 @@
 import base64
 import subprocess
+import sys
 import time
 from functools import cached_property
 
@@ -143,10 +144,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             f"/contents/{self.IMAGE_UPLOAD_DIRECTORY}/{filename}"
         )
         data = {
-            "message": (
-                "[webpage-screenshot-action] Added Screenshots for "
-                f"PR #{self.configuration.GITHUB_PULL_REQUEST_NUMBER}"
-            ),
+            "message": "[webpage-screenshot-action] Added Screenshots for this Issue or Pull Request.",
             "content": base64.b64encode(image_data).decode("utf-8"),
             "branch": self.BRANCH_NAME,
             "author": {"name": self.AUTHOR_NAME, "email": self.AUTHOR_EMAIL},
@@ -165,10 +163,10 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
                 f'Error while trying to upload "{filename}" to github. '
                 "GitHub API returned error response for "
                 f"{self.configuration.GITHUB_REPOSITORY},"
-                f"status code: {response.status_code}"
+                f"error: {response.text}"
             )
             print_message(msg, message_type="error")
-            return None
+            sys.exit(1)
 
     def upload(self):
         """Upload Images to a GitHub Branch"""

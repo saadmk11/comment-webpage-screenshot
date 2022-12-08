@@ -39,7 +39,7 @@ class WebpageScreenshotAction:
             f"actions/runs/{self.configuration.GITHUB_RUN_ID}"
         )
 
-        string_data = f"{self.configuration.CUSTOM_ATTACHMENT_MSG} `{self.configuration.GITHUB_SHA}`. \
+        comment_body = f"{self.configuration.CUSTOM_ATTACHMENT_MSG} `{self.configuration.GITHUB_SHA}`. \
             _You can inspect the workflow run [here]({run_url})_. \n\n"
 
         for image in sorted(images, key=lambda image: image["filename"]):
@@ -48,7 +48,12 @@ class WebpageScreenshotAction:
                 image["filename"],
                 image["url"],
             )
-            string_data += f"### {file_path}\n<kbd> ![{filename}]({url})\n"
+            gh_media_url_embedding = (
+                f"![{filename}]({url})"
+                if any(f in filename[-4:] for f in ["png", "jpg", "jpeg"])
+                else url
+            )
+            comment_body += f"### {file_path}\n<kbd> {gh_media_url_embedding}\n"
 
         comment_url = (
             f"{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}/"
@@ -56,7 +61,7 @@ class WebpageScreenshotAction:
         )
 
         response = requests.post(
-            comment_url, headers=self._request_headers, json={"body": string_data}
+            comment_url, headers=self._request_headers, json={"body": comment_body}
         )
 
         if response.status_code != 201:
@@ -100,7 +105,7 @@ class WebpageScreenshotAction:
         self, latest_issue_url: str, latest_comment_url: str
     ):
         """Tell the previous comment about the new one."""
-        deprecation_notice = f"__DEPRECATED__: _This screenshot is no longer up-to-date. The latest version can be found [here]({latest_comment_url})_."
+        deprecation_notice_body = f"__DEPRECATED__: _This screenshot is no longer up-to-date. The latest version can be found [here]({latest_comment_url})_."
 
         url_list_comments_in_issue = (
             f"{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}/"
@@ -149,7 +154,7 @@ class WebpageScreenshotAction:
                 response = requests.patch(
                     edit_past_comment_url,
                     headers=self._request_headers,
-                    json={"body": deprecation_notice},
+                    json={"body": deprecation_notice_body},
                 )
 
     def run(self):
