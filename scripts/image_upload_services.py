@@ -143,10 +143,7 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
             f"/contents/{self.IMAGE_UPLOAD_DIRECTORY}/{filename}"
         )
         data = {
-            "message": (
-                "[webpage-screenshot-action] Added Screenshots for "
-                f"PR #{self.configuration.GITHUB_PULL_REQUEST_NUMBER}"
-            ),
+            "message": "[webpage-screenshot-action] Added Screenshots for this Issue or Pull Request.",
             "content": base64.b64encode(image_data).decode("utf-8"),
             "branch": self.BRANCH_NAME,
             "author": {"name": self.AUTHOR_NAME, "email": self.AUTHOR_EMAIL},
