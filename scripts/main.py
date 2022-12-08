@@ -49,11 +49,11 @@ class WebpageScreenshotAction:
                 image["url"],
             )
             gh_media_url_embedding = (
-                f"![{filename}]({url})"
-                if any(f in filename[-4:] for f in ["png", "jpg", "jpeg"])
+                f"<kbd>![{filename}]({url})</kbd>"
+                if any(f in filename[-4:] for f in ["png", "jpg", "jpeg", "gif"])
                 else url
             )
-            comment_body += f"### {file_path}\n<kbd> {gh_media_url_embedding}\n"
+            comment_body += f"### {file_path}\n{gh_media_url_embedding}\n"
 
         comment_url = (
             f"{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}/"

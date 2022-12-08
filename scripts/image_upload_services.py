@@ -3,6 +3,7 @@ import subprocess
 import sys
 import time
 from functools import cached_property
+from uuid import uuid4
 
 import requests
 from helpers import print_message
@@ -139,6 +140,14 @@ class GitHubBranchImageUploadService(ImageUploadServiceBase):
         )
 
     def _upload_single_image(self, filename, image_data):
+        """
+        As of nov. 2022, GitHub treats file uploads with an already used filename as updates, 
+        and as a result expects as request param the 'sha' of the file to update.
+        This would need to save sha-s between jobs. 
+        """
+        fingerprint = str(uuid4())
+        head, tail = filename[:-5], filename[-5:]
+        filename = head + fingerprint + tail
         url = (
             f"{self.GITHUB_API_URL}/repos/{self.configuration.GITHUB_REPOSITORY}"
             f"/contents/{self.IMAGE_UPLOAD_DIRECTORY}/{filename}"
