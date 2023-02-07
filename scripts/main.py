@@ -50,7 +50,7 @@ class WebpageScreenshotAction:
             )
             has_extension = filename[-4:]
 
-            if any(f in has_extension for f in ["png", "jpg", "jpeg", "gif"]):
+            if any(f in has_extension for f in ["png", "jpg", "jpeg", "webp", "gif"]):
                 gh_media_url_embedding = f"<kbd>![{filename}]({url})</kbd>"
 
             else:
